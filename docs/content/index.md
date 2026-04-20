@@ -65,7 +65,7 @@ Why Activity Log?
   Pluggable Sources
 
   #description
-  Compose any number of sources per model — own log, related logs, timestamp columns, custom closures.
+  Compose any number of sources per model - own log, related logs, timestamp columns, custom closures.
   :::
 
   :::u-page-feature
@@ -98,7 +98,7 @@ Why Activity Log?
   Filament-Native UX
 
   #description
-  Infolist component, relation manager, and header-action slide-over — drop it in wherever you need a timeline.
+  Infolist component, relation manager, and header-action slide-over - drop it in wherever you need a timeline.
   :::
 
   :::u-page-feature
@@ -124,12 +124,14 @@ Extend your Laravel applications with our ecosystem of complementary tools
   ::card-group
     :::card
     ---
-    title: Flowforge
-    icon: i-lucide-kanban
-    to: https://relaticle.github.io/flowforge
+    title: FilaForms
+    icon: i-simple-icons-laravel
+    to: https://filaforms.app
     target: _blank
     ---
-    Transform any Laravel model into a drag-and-drop Kanban board.
+    ![FilaForms](https://filaforms.app/img/og-image.png)
+
+    Visual form builder for all your public-facing forms.
     :::
 
     :::card
@@ -139,17 +141,21 @@ Extend your Laravel applications with our ecosystem of complementary tools
     to: https://relaticle.github.io/custom-fields
     target: _blank
     ---
+    ![Custom Fields](https://github.com/Relaticle/custom-fields/raw/2.x/art/preview.png)
+
     Let users add custom fields to any model without code changes.
     :::
 
     :::card
     ---
-    title: FilaForms
-    icon: i-simple-icons-laravel
-    to: https://filaforms.app
+    title: Flowforge
+    icon: i-lucide-kanban
+    to: https://relaticle.github.io/flowforge
     target: _blank
     ---
-    Visual form builder for all your public-facing forms.
+    ![Flowforge](https://github.com/relaticle/flowforge/raw/4.x/art/preview.png)
+
+    Drag-and-drop Kanban for any Laravel model.
     :::
   ::
 ::

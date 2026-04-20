@@ -1,6 +1,6 @@
 # Core Concepts
 
-> The main building blocks — builder, sources, entries, renderers, and priority.
+> Builder, sources, entries, and renderers.
 
 <table>
 <thead>
@@ -26,15 +26,7 @@
     </td>
     
     <td>
-      Fluent builder that composes <strong>
-        sources
-      </strong>
-      
-      , applies <strong>
-        filters
-      </strong>
-      
-      , and returns paginated <code>
+      Fluent builder that composes sources, applies filters, and returns paginated <code>
         TimelineEntry
       </code>
       
@@ -60,23 +52,7 @@
         TimelineEntry
       </code>
       
-       objects from a specific origin (spatie log, related timestamps, custom closure). Implementations: <code>
-        ActivityLogSource
-      </code>
-      
-      , <code>
-        RelatedActivityLogSource
-      </code>
-      
-      , <code>
-        RelatedModelSource
-      </code>
-      
-      , <code>
-        CustomEventSource
-      </code>
-      
-      .
+       objects from a single origin - spatie log, related timestamps, or custom closure.
     </td>
   </tr>
   
@@ -90,7 +66,7 @@
     </td>
     
     <td>
-      Immutable value object describing a single event: <code>
+      Immutable value object describing one event (<code>
         event
       </code>
       
@@ -103,38 +79,14 @@
       </code>
       
       , <code>
-        description
-      </code>
-      
-      , <code>
-        icon
-      </code>
-      
-      , <code>
-        color
-      </code>
-      
-      , <code>
-        subject
-      </code>
-      
-      , <code>
         causer
-      </code>
-      
-      , <code>
-        relatedModel
       </code>
       
       , <code>
         properties
       </code>
       
-      , plus an optional <code>
-        renderer
-      </code>
-      
-       key.
+      , …).
     </td>
   </tr>
   
@@ -160,7 +112,7 @@
         HtmlString
       </code>
       
-      . The default renderer handles every entry; you register custom renderers per <code>
+      . Register custom ones per <code>
         event
       </code>
       
@@ -180,27 +132,77 @@
     </td>
     
     <td>
-      Each source carries a priority. When two entries share a <code>
+      Each source carries a priority; on <code>
         dedupKey
       </code>
       
-      , the higher-priority one wins. Defaults: <code>
+       collisions the higher one wins.
+    </td>
+  </tr>
+</tbody>
+</table>
+
+## Default source priorities
+
+<table>
+<thead>
+  <tr>
+    <th>
+      Source
+    </th>
+    
+    <th>
+      Priority
+    </th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr>
+    <td>
+      <code>
         activity_log
       </code>
-      
-      =10, <code>
+    </td>
+    
+    <td>
+      10
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         related_activity_log
       </code>
-      
-      =10, <code>
+    </td>
+    
+    <td>
+      10
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         related_model
       </code>
-      
-      =20, <code>
+    </td>
+    
+    <td>
+      20
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         custom
       </code>
-      
-      =30.
+    </td>
+    
+    <td>
+      30
     </td>
   </tr>
 </tbody>

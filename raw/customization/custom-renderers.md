@@ -1,19 +1,21 @@
 # Custom Renderers
 
-> Register renderers per event or type via plugin, facade, or config.
+> Register renderers per event or type.
 
 Out of the box, entries from spatie's activity log render via the built-in `ActivityLogRenderer` (which understands `updated`/`created`/etc. events and renders field diffs), and everything else falls back to `DefaultRenderer` (title, description, causer, relative time, colored icon). For branded output per event type, register a custom renderer.
 
 ## Registering via the panel plugin
 
 ```php
+use App\Timeline\Renderers\EmailSentRenderer;
+use Illuminate\Support\HtmlString;
 use Relaticle\ActivityLog\Filament\ActivityLogPlugin;
 
 $panel->plugin(
     ActivityLogPlugin::make()->renderers([
-        'email_sent'   => \App\Timeline\Renderers\EmailSentRenderer::class,
-        'note_added'   => 'my-app::timeline.note-added',          // view name
-        'task_done'    => fn ($entry) => new HtmlString('...'),   // closure
+        'email_sent' => EmailSentRenderer::class,
+        'note_added' => 'my-app::timeline.note-added',          // view name
+        'task_done'  => fn ($entry) => new HtmlString('...'),   // closure
     ]),
 );
 ```
@@ -21,9 +23,11 @@ $panel->plugin(
 ## Registering via the facade (e.g., from a service provider)
 
 ```php
+use App\Timeline\Renderers\EmailSentRenderer;
+use Illuminate\Support\HtmlString;
 use Relaticle\ActivityLog\Facades\Timeline;
 
-Timeline::registerRenderer('email_sent', \App\Timeline\Renderers\EmailSentRenderer::class);
+Timeline::registerRenderer('email_sent', EmailSentRenderer::class);
 Timeline::registerRenderer('note_added', 'my-app::timeline.note-added');
 Timeline::registerRenderer('task_done', fn ($entry) => new HtmlString('...'));
 ```
@@ -32,8 +36,10 @@ Timeline::registerRenderer('task_done', fn ($entry) => new HtmlString('...'));
 
 ```php
 // config/activity-log.php
+use App\Timeline\Renderers\EmailSentRenderer;
+
 'renderers' => [
-    'email_sent' => \App\Timeline\Renderers\EmailSentRenderer::class,
+    'email_sent' => EmailSentRenderer::class,
 ],
 ```
 
@@ -52,12 +58,16 @@ A renderer binding can be any of:
 
 - **Class string** implementing `Relaticle\ActivityLog\Contracts\TimelineRenderer`
 - **Closure** `fn (TimelineEntry $entry): View|HtmlString => ...`
-- **View name** (e.g., `'my-app::timeline.email-sent'`) — receives `$entry` in scope
+- **View name** (e.g., `'my-app::timeline.email-sent'`) - receives `$entry` in scope
 
 ```php
-final class EmailSentRenderer implements \Relaticle\ActivityLog\Contracts\TimelineRenderer
+use Illuminate\Contracts\View\View;
+use Relaticle\ActivityLog\Contracts\TimelineRenderer;
+use Relaticle\ActivityLog\Timeline\TimelineEntry;
+
+final class EmailSentRenderer implements TimelineRenderer
 {
-    public function render(\Relaticle\ActivityLog\Timeline\TimelineEntry $entry): \Illuminate\Contracts\View\View
+    public function render(TimelineEntry $entry): View
     {
         return view('app.timeline.email-sent', ['entry' => $entry]);
     }

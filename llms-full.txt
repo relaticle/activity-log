@@ -71,8 +71,18 @@ class Person extends Model implements HasTimeline
             ->fromActivityLogOf(['emails', 'notes', 'tasks'])
             ->fromRelation('emails', function (RelatedModelSource $source): void {
                 $source
-                    ->event('sent_at', 'email_sent', icon: 'heroicon-o-paper-airplane', color: 'primary')
-                    ->event('received_at', 'email_received', icon: 'heroicon-o-inbox-arrow-down', color: 'info')
+                    ->event(
+                        column: 'sent_at',
+                        event: 'email_sent',
+                        icon: 'heroicon-o-paper-airplane',
+                        color: 'primary',
+                    )
+                    ->event(
+                        column: 'received_at',
+                        event: 'email_received',
+                        icon: 'heroicon-o-inbox-arrow-down',
+                        color: 'info',
+                    )
                     ->title(fn ($email): string => $email->subject ?? 'Email')
                     ->causer(fn ($email) => $email->from->first());
             });
@@ -103,20 +113,31 @@ That's the minimum wiring. The [Essentials](https://relaticle.github.io/activity
 
 # Core Concepts
 
-| Concept                | What it represents                                                                                                                                                                                                     |
-| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`TimelineBuilder`**  | Fluent builder that composes **sources**, applies **filters**, and returns paginated `TimelineEntry` collections. Built per-record via `$record->timeline()`.                                                          |
-| **`TimelineSource`**   | Produces `TimelineEntry` objects from a specific origin (spatie log, related timestamps, custom closure). Implementations: `ActivityLogSource`, `RelatedActivityLogSource`, `RelatedModelSource`, `CustomEventSource`. |
-| **`TimelineEntry`**    | Immutable value object describing a single event: `event`, `occurredAt`, `title`, `description`, `icon`, `color`, `subject`, `causer`, `relatedModel`, `properties`, plus an optional `renderer` key.                  |
-| **`TimelineRenderer`** | Converts a `TimelineEntry` into a Blade `View` or `HtmlString`. The default renderer handles every entry; you register custom renderers per `event` or `type`.                                                         |
-| **Priority**           | Each source carries a priority. When two entries share a `dedupKey`, the higher-priority one wins. Defaults: `activity_log`=10, `related_activity_log`=10, `related_model`=20, `custom`=30.                            |
+| Concept                | What it represents                                                                                                                                    |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`TimelineBuilder`**  | Fluent builder that composes sources, applies filters, and returns paginated `TimelineEntry` collections. Built per-record via `$record->timeline()`. |
+| **`TimelineSource`**   | Produces `TimelineEntry` objects from a single origin - spatie log, related timestamps, or custom closure.                                            |
+| **`TimelineEntry`**    | Immutable value object describing one event (`event`, `occurredAt`, `title`, `causer`, `properties`, …).                                              |
+| **`TimelineRenderer`** | Converts a `TimelineEntry` into a Blade `View` or `HtmlString`. Register custom ones per `event` or `type`.                                           |
+| **Priority**           | Each source carries a priority; on `dedupKey` collisions the higher one wins.                                                                         |
+
+## Default source priorities
+
+| Source                 | Priority |
+| ---------------------- | -------- |
+| `activity_log`         | 10       |
+| `related_activity_log` | 10       |
+| `related_model`        | 20       |
+| `custom`               | 30       |
 
 
 # Data Sources
 
 All sources are registered fluently on `TimelineBuilder`. You can mix any number of them in one timeline.
 
-## `fromActivityLog()` — the record's own spatie log
+## The record's own spatie log
+
+Use `fromActivityLog()` to pull the subject's own `activity_log` rows:
 
 ```php
 TimelineBuilder::make($this)->fromActivityLog();
@@ -124,7 +145,9 @@ TimelineBuilder::make($this)->fromActivityLog();
 
 Reads rows from `activity_log` where `subject_type` + `subject_id` match `$this`. Entry `event` = the spatie `event` column (or `description` as fallback).
 
-## `fromActivityLogOf(array $relations)` — related models' spatie logs
+## Related models' spatie logs
+
+Use `fromActivityLogOf(array $relations)` to include spatie logs from related records:
 
 ```php
 TimelineBuilder::make($this)->fromActivityLogOf(['emails', 'notes', 'tasks']);
@@ -132,40 +155,59 @@ TimelineBuilder::make($this)->fromActivityLogOf(['emails', 'notes', 'tasks']);
 
 For each named relation, reads `activity_log` rows whose subject matches any related record. Useful for "show me everything that happened to anything attached to this person."
 
-## `fromRelation(string $relation, Closure $configure)` — timestamp columns
+## Timestamp columns on related models
 
-Turns rows on a related model into timeline entries keyed by a timestamp column. Ideal when related records already carry canonical timestamps (`sent_at`, `completed_at`, `created_at`) and you don't need spatie-style change logs.
+Use `fromRelation(string $relation, Closure $configure)` to turn rows on a related model into timeline entries keyed by a timestamp column. Ideal when related records already carry canonical timestamps (`sent_at`, `completed_at`, `created_at`) and you don't need spatie-style change logs.
 
 ```php
 ->fromRelation('tasks', function (RelatedModelSource $source): void {
     $source
-        ->event('completed_at', 'task_completed', icon: 'heroicon-o-check-circle', color: 'success')
-        ->event('created_at', 'task_created', icon: 'heroicon-o-plus-circle')
-        ->with(['creator', 'assignee'])                               // eager loads
-        ->using(fn ($query) => $query->whereNull('archived_at'))      // extra constraints
+        ->event(
+            column: 'completed_at',
+            event: 'task_completed',
+            icon: 'heroicon-o-check-circle',
+            color: 'success',
+        )
+        ->event(
+            column: 'created_at',
+            event: 'task_created',
+            icon: 'heroicon-o-plus-circle',
+        )
+        // Eager-load related rows to avoid N+1 inside renderers.
+        ->with(['creator', 'assignee'])
+        // Extra query constraints (scopes, tenant filters, etc.).
+        ->using(fn ($query) => $query->whereNull('archived_at'))
         ->title(fn ($task): string => $task->title ?? 'Task')
         ->description(fn ($task): ?string => $task->summary)
-        ->causer('creator');                                           // relation name or Closure
+        // Relation name on the row, or a Closure returning Model|null.
+        ->causer('creator');
 })
 ```
 
 ### `RelatedModelSource` API
 
-| Method                                                                                | Purpose                                                                                            |
-| ------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| `event(string $column, string $event, ?string $icon, ?string $color, ?Closure $when)` | Register one event per timestamp column. `when` is an optional row-level filter (return `bool`).   |
-| `with(array $relations)`                                                              | Eager-loads relations on every event query — prevents N+1 in renderers.                            |
-| `using(Closure $modifier)`                                                            | Arbitrary query modifier (scope injection, tenant scoping, etc.).                                  |
-| `title(Closure)` / `description(Closure)`                                             | Per-row resolver for display fields.                                                               |
-| `causer(Closure|string)`                                                              | Resolves the actor. `string` is a relation name on the row; closure returns a `Model` (or `null`). |
+| Method                                            | Purpose                                                                                            |
+| ------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `event($column, $event, $icon?, $color?, $when?)` | Register one event per timestamp column. `$when` is an optional row-level filter returning `bool`. |
+| `with($relations)`                                | Eager-loads relations on every event query - prevents N+1 in renderers.                            |
+| `using($modifier)`                                | Arbitrary query modifier (scopes, tenant filters, etc.).                                           |
+| `title($resolver)` / `description($resolver)`     | Per-row resolver for display fields.                                                               |
+| `causer($resolver)`                               | Relation-name string, or Closure returning `Model|null`.                                           |
 
-## `fromCustom(Closure $resolver)` — anything else
+## Custom or external data
 
-When the data isn't in `activity_log` and isn't a relation (e.g. entries coming from an external API), yield your own `TimelineEntry` objects:
+Use `fromCustom(Closure $resolver)` when the data isn't in `activity_log` and isn't a relation (e.g. entries coming from an external API). Yield your own `TimelineEntry` objects:
 
 ```php
 ->fromCustom(function (Model $subject, Window $window): iterable {
-    foreach (ExternalApi::events($subject, $window->from, $window->to, $window->cap) as $row) {
+    $rows = ExternalApi::events(
+        subject: $subject,
+        from: $window->from,
+        to: $window->to,
+        limit: $window->cap,
+    );
+
+    foreach ($rows as $row) {
         yield new TimelineEntry(
             id: 'external:'.$row['id'],
             type: 'custom',
@@ -179,40 +221,114 @@ When the data isn't in `activity_log` and isn't a relation (e.g. entries coming 
 })
 ```
 
-## `addSource(TimelineSource $source)` — drop-in custom sources
+## Reusable custom source classes
 
-For reusable sources, implement `Relaticle\ActivityLog\Contracts\TimelineSource` and pass it directly. Useful when the resolution logic warrants its own class.
+Use `addSource(TimelineSource $source)` for sources you want to reuse across models. Implement `Relaticle\ActivityLog\Contracts\TimelineSource` and pass it directly - useful when the resolution logic warrants its own class.
+
+The contract has two methods - `priority()` for dedup ordering, and `resolve()` which yields `TimelineEntry` objects for the given `$subject` within the `Window`'s date range and cap:
+
+```php
+namespace App\Timeline\Sources;
+
+use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Model;
+use Relaticle\ActivityLog\Contracts\TimelineSource;
+use Relaticle\ActivityLog\Timeline\TimelineEntry;
+use Relaticle\ActivityLog\Timeline\Window;
+
+final class StripePaymentSource implements TimelineSource
+{
+    public function priority(): int
+    {
+        return 30;
+    }
+
+    public function resolve(Model $subject, Window $window): iterable
+    {
+        $payments = StripeClient::paymentsFor(
+            customer: $subject->stripe_id,
+            from: $window->from,
+            to: $window->to,
+            limit: $window->cap,
+        );
+
+        foreach ($payments as $payment) {
+            yield new TimelineEntry(
+                id: "stripe:{$payment->id}",
+                type: 'custom',
+                event: 'payment_succeeded',
+                occurredAt: CarbonImmutable::parse($payment->created_at),
+                dedupKey: "stripe:{$payment->id}",
+                sourcePriority: $this->priority(),
+                title: "Payment of {$payment->amount_formatted}",
+            );
+        }
+    }
+}
+```
+
+Then register it on the builder:
+
+```php
+public function timeline(): TimelineBuilder
+{
+    return TimelineBuilder::make($this)
+        ->fromActivityLog()
+        ->addSource(new StripePaymentSource());
+}
+```
 
 
-# Filtering, Sorting, Dedup
+# Refining the Timeline
 
-All methods are chainable on `TimelineBuilder`:
+Every refinement is a chainable method on `TimelineBuilder`. Compose only what you need - each section below covers one concern.
+
+## Filtering
+
+Narrow the entries by date window, type, or event. All four filters stack and are cumulative.
 
 ```php
 $record->timeline()
-    ->between(now()->subMonth(), now())            // CarbonInterface|null on each side
-    ->ofType(['related_model', 'activity_log'])     // allow-list
-    ->exceptType(['custom'])                        // deny-list
-    ->ofEvent(['email_sent', 'task_completed'])
-    ->exceptEvent(['draft_saved'])
-    ->sortByDateDesc()                              // default; use sortByDateAsc() for ascending
-    ->deduplicate(false)                            // default: true
-    ->dedupKeyUsing(fn ($entry) => $entry->type.':'.$entry->event.':'.$entry->occurredAt->toDateString())
-    ->paginate(perPage: 20, page: 1);
+    ->between(now()->subMonth(), now())         // CarbonInterface|null on each side
+    ->ofType(['related_model', 'activity_log']) // type allow-list
+    ->exceptType(['custom'])                    // type deny-list
+    ->ofEvent(['email_sent', 'task_completed']) // event allow-list
+    ->exceptEvent(['draft_saved']);             // event deny-list
 ```
 
-Dedup behaviour: entries sharing a `dedupKey` collapse to the highest `sourcePriority` (first occurrence wins on ties). Override the key with `dedupKeyUsing()` if the default identity isn't right for your use case.
+## Sorting
 
-## Methods that run the query
+Order the combined stream after sources are merged.
+
+```php
+$record->timeline()
+    ->sortByDateDesc(); // default; use sortByDateAsc() for ascending
+```
+
+## Deduplication
+
+Entries sharing a `dedupKey` collapse to the highest `sourcePriority` (first occurrence wins on ties). Disable entirely, or override the key when the default identity isn't right for your use case.
+
+```php
+$record->timeline()
+    ->deduplicate(true) // default: true - pass false to keep every entry
+    ->dedupKeyUsing(fn ($entry) =>
+        "{$entry->type}:{$entry->event}:{$entry->occurredAt->toDateString()}"
+    );
+```
+
+## Running the query
+
+After filters/sort/dedup are set, one of these methods executes and returns entries.
 
 | Method                                   | Returns                                                                                                 |
 | ---------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| `get()`                                  | `Collection<int, TimelineEntry>` — all entries up to the internal 10 000 cap.                           |
+| `get()`                                  | `Collection<int, TimelineEntry>` - all entries up to the internal 10 000 cap.                           |
 | `paginate(?int $perPage, int $page = 1)` | `LengthAwarePaginator<int, TimelineEntry>`. Uses `activity-log.default_per_page` if `$perPage` is null. |
 | `count()`                                | `int` (runs `get()`).                                                                                   |
 
 
-# Filament Integrations
+# Components
 
 ## Infolist component
 
@@ -223,10 +339,10 @@ use Relaticle\ActivityLog\Filament\Infolists\Components\ActivityLog;
 
 ActivityLog::make('activity')
     ->heading('Activity')
-    ->groupByDate()                  // group by today / yesterday / this week / last week / this month / older (default: true)
-    ->perPage(20)                    // per-page for the Livewire component (default: 3)
+    ->groupByDate()                  // bucket by today / this week / older (default: true)
+    ->perPage(20)                    // Livewire page size (default: 3)
     ->emptyState('No activity yet.') // custom empty-state message
-    ->infiniteScroll(true)           // true = wire:intersect (default); false = "Load more" button
+    ->infiniteScroll(true)           // false renders a "Load more" button (default: true)
     ->columnSpanFull();
 ```
 
@@ -234,8 +350,8 @@ ActivityLog::make('activity')
 
 The `infiniteScroll()` fluent flag switches the bottom control:
 
-- `true` (default) — renders a `wire:intersect` sentinel; the next page loads automatically as the user scrolls (Livewire 4).
-- `false` — renders a `Load more` button the user clicks.
+- `true` (default) - renders a `wire:intersect` sentinel; the next page loads automatically as the user scrolls (Livewire 4).
+- `false` - renders a `Load more` button the user clicks.
 
 ## Relation manager
 
@@ -246,11 +362,13 @@ use Relaticle\ActivityLog\Filament\RelationManagers\ActivityLogRelationManager;
 
 public static function getRelations(): array
 {
-    return [ActivityLogRelationManager::class];
+    return [
+        ActivityLogRelationManager::class,
+    ];
 }
 ```
 
-`canViewForRecord()` always returns `true`. It declares a dummy `HasOne` relationship so it doesn't write to the DB — the page just hosts the Livewire component.
+`canViewForRecord()` always returns `true`. It declares a dummy `HasOne` relationship so it doesn't write to the DB - the page just hosts the Livewire component.
 
 The relation manager carries a `protected static bool $infiniteScroll = true` that is forwarded to the Livewire component. Flip it from a service provider if you want the opposite UX:
 
@@ -283,13 +401,15 @@ Out of the box, entries from spatie's activity log render via the built-in `Acti
 ## Registering via the panel plugin
 
 ```php
+use App\Timeline\Renderers\EmailSentRenderer;
+use Illuminate\Support\HtmlString;
 use Relaticle\ActivityLog\Filament\ActivityLogPlugin;
 
 $panel->plugin(
     ActivityLogPlugin::make()->renderers([
-        'email_sent'   => \App\Timeline\Renderers\EmailSentRenderer::class,
-        'note_added'   => 'my-app::timeline.note-added',          // view name
-        'task_done'    => fn ($entry) => new HtmlString('...'),   // closure
+        'email_sent' => EmailSentRenderer::class,
+        'note_added' => 'my-app::timeline.note-added',          // view name
+        'task_done'  => fn ($entry) => new HtmlString('...'),   // closure
     ]),
 );
 ```
@@ -297,9 +417,11 @@ $panel->plugin(
 ## Registering via the facade (e.g., from a service provider)
 
 ```php
+use App\Timeline\Renderers\EmailSentRenderer;
+use Illuminate\Support\HtmlString;
 use Relaticle\ActivityLog\Facades\Timeline;
 
-Timeline::registerRenderer('email_sent', \App\Timeline\Renderers\EmailSentRenderer::class);
+Timeline::registerRenderer('email_sent', EmailSentRenderer::class);
 Timeline::registerRenderer('note_added', 'my-app::timeline.note-added');
 Timeline::registerRenderer('task_done', fn ($entry) => new HtmlString('...'));
 ```
@@ -308,8 +430,10 @@ Timeline::registerRenderer('task_done', fn ($entry) => new HtmlString('...'));
 
 ```php
 // config/activity-log.php
+use App\Timeline\Renderers\EmailSentRenderer;
+
 'renderers' => [
-    'email_sent' => \App\Timeline\Renderers\EmailSentRenderer::class,
+    'email_sent' => EmailSentRenderer::class,
 ],
 ```
 
@@ -328,12 +452,16 @@ A renderer binding can be any of:
 
 - **Class string** implementing `Relaticle\ActivityLog\Contracts\TimelineRenderer`
 - **Closure** `fn (TimelineEntry $entry): View|HtmlString => ...`
-- **View name** (e.g., `'my-app::timeline.email-sent'`) — receives `$entry` in scope
+- **View name** (e.g., `'my-app::timeline.email-sent'`) - receives `$entry` in scope
 
 ```php
-final class EmailSentRenderer implements \Relaticle\ActivityLog\Contracts\TimelineRenderer
+use Illuminate\Contracts\View\View;
+use Relaticle\ActivityLog\Contracts\TimelineRenderer;
+use Relaticle\ActivityLog\Timeline\TimelineEntry;
+
+final class EmailSentRenderer implements TimelineRenderer
 {
-    public function render(\Relaticle\ActivityLog\Timeline\TimelineEntry $entry): \Illuminate\Contracts\View\View
+    public function render(TimelineEntry $entry): View
     {
         return view('app.timeline.email-sent', ['entry' => $entry]);
     }
@@ -343,11 +471,15 @@ final class EmailSentRenderer implements \Relaticle\ActivityLog\Contracts\Timeli
 
 # Caching
 
-Opt-in per call — disabled by default.
+Opt-in per call - disabled by default.
+
+## Caching a query
 
 ```php
 $record->timeline()->cached(ttlSeconds: 300)->paginate();
 ```
+
+## Invalidating the cache
 
 Invalidate when mutations occur (consumer-driven; the plugin doesn't observe your models):
 
@@ -355,13 +487,16 @@ Invalidate when mutations occur (consumer-driven; the plugin doesn't observe you
 $record->forgetTimelineCache();
 ```
 
+## Cache store and prefix
+
 Configure the cache store and key prefix in `config/activity-log.php` under `cache`.
 
 
-# Configuration Reference
+# Configuration
+
+## `config/activity-log.php`
 
 ```php
-// config/activity-log.php
 return [
     // Default page size when ->perPage() isn't called.
     'default_per_page' => 20,
@@ -385,9 +520,8 @@ return [
     'date_groups' => ['today', 'yesterday', 'this_week', 'last_week', 'this_month', 'older'],
 
     // Event-or-type → renderer binding. Merged with bindings from the plugin/facade.
-    'renderers' => [
-        // 'email_sent' => \App\Timeline\Renderers\EmailSentRenderer::class,
-    ],
+    // 'email_sent' => EmailSentRenderer::class (add `use App\Timeline\Renderers\EmailSentRenderer;` at top of file).
+    'renderers' => [],
 
     'cache' => [
         'store'       => null,           // null = default cache store
@@ -400,7 +534,9 @@ return [
 
 # Tailwind
 
-The plugin's Blade views use Tailwind utilities. If your panel has a compiled theme, include the plugin's views in its source list:
+The plugin's Blade views use Tailwind utilities. If your panel has a compiled theme, include the plugin's views in its source list.
+
+## Add the plugin views to `theme.css`
 
 ```css [resources/css/filament/{panel}/theme.css] {0} [resources/css/filament//theme.css]
 @source '../../../../vendor/relaticle/activity-log/resources/views/**/*';
@@ -488,7 +624,7 @@ Why Activity Log?
   Pluggable Sources
 
   #description
-  Compose any number of sources per model — own log, related logs, timestamp columns, custom closures.
+  Compose any number of sources per model - own log, related logs, timestamp columns, custom closures.
   :::
 
   :::u-page-feature
@@ -521,7 +657,7 @@ Why Activity Log?
   Filament-Native UX
 
   #description
-  Infolist component, relation manager, and header-action slide-over — drop it in wherever you need a timeline.
+  Infolist component, relation manager, and header-action slide-over - drop it in wherever you need a timeline.
   :::
 
   :::u-page-feature
@@ -540,12 +676,14 @@ Why Activity Log?
   :::card-group
     ::::card
     ---
-    icon: i-lucide-kanban
+    icon: i-simple-icons-laravel
     target: _blank
-    title: Flowforge
-    to: https://relaticle.github.io/flowforge
+    title: FilaForms
+    to: https://filaforms.app
     ---
-    Transform any Laravel model into a drag-and-drop Kanban board.
+    ![FilaForms](https://filaforms.app/img/og-image.png)
+
+    Visual form builder for all your public-facing forms.
     ::::
 
     ::::card
@@ -555,17 +693,21 @@ Why Activity Log?
     title: Custom Fields
     to: https://relaticle.github.io/custom-fields
     ---
+    ![Custom Fields](https://github.com/Relaticle/custom-fields/raw/2.x/art/preview.png)
+
     Let users add custom fields to any model without code changes.
     ::::
 
     ::::card
     ---
-    icon: i-simple-icons-laravel
+    icon: i-lucide-kanban
     target: _blank
-    title: FilaForms
-    to: https://filaforms.app
+    title: Flowforge
+    to: https://relaticle.github.io/flowforge
     ---
-    Visual form builder for all your public-facing forms.
+    ![Flowforge](https://github.com/relaticle/flowforge/raw/4.x/art/preview.png)
+
+    Drag-and-drop Kanban for any Laravel model.
     ::::
   :::
 

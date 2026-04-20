@@ -6,16 +6,16 @@
 
 ## Docs
 
-- [Installation](https://relaticle.github.io/activity-log/raw/getting-started/installation.md): Install the package and index the activity_log table.
-- [Quick Start](https://relaticle.github.io/activity-log/raw/getting-started/quick-start.md): Wire HasTimeline to a model and render the timeline on a Filament resource.
-- [Core Concepts](https://relaticle.github.io/activity-log/raw/essentials/core-concepts.md): The main building blocks — builder, sources, entries, renderers, and priority.
-- [Data Sources](https://relaticle.github.io/activity-log/raw/essentials/data-sources.md): Compose sources — own log, related logs, timestamp columns, custom closures.
-- [Filtering, Sorting, Dedup](https://relaticle.github.io/activity-log/raw/essentials/filtering-sorting-dedup.md): Chainable filters, sort order, and deduplication behaviour.
-- [Filament Integrations](https://relaticle.github.io/activity-log/raw/essentials/filament-integrations.md): Infolist component, relation manager, and header action.
-- [Custom Renderers](https://relaticle.github.io/activity-log/raw/customization/custom-renderers.md): Register renderers per event or type via plugin, facade, or config.
-- [Caching](https://relaticle.github.io/activity-log/raw/customization/caching.md): Opt-in per-call caching with explicit invalidation.
-- [Configuration Reference](https://relaticle.github.io/activity-log/raw/customization/configuration.md): Every key in config/activity-log.php.
-- [Tailwind](https://relaticle.github.io/activity-log/raw/customization/tailwind.md): Include plugin views in your panel's theme.css source list.
+- [Installation](https://relaticle.github.io/activity-log/raw/getting-started/installation.md): Install and migrate the package.
+- [Quick Start](https://relaticle.github.io/activity-log/raw/getting-started/quick-start.md): Wire HasTimeline and render the timeline.
+- [Core Concepts](https://relaticle.github.io/activity-log/raw/essentials/core-concepts.md): Builder, sources, entries, and renderers.
+- [Data Sources](https://relaticle.github.io/activity-log/raw/essentials/data-sources.md): Compose sources for your timeline.
+- [Refining the Timeline](https://relaticle.github.io/activity-log/raw/essentials/refining-the-timeline.md): Filters, sorting, and deduplication.
+- [Components](https://relaticle.github.io/activity-log/raw/essentials/components.md): Infolist component, relation manager, and header action.
+- [Custom Renderers](https://relaticle.github.io/activity-log/raw/customization/custom-renderers.md): Register renderers per event or type.
+- [Caching](https://relaticle.github.io/activity-log/raw/customization/caching.md): Opt-in per-call caching.
+- [Configuration](https://relaticle.github.io/activity-log/raw/customization/configuration.md): All config keys at a glance.
+- [Tailwind](https://relaticle.github.io/activity-log/raw/customization/tailwind.md): Register plugin views in your theme.
 - [Performance Notes](https://relaticle.github.io/activity-log/raw/advanced/performance.md): Over-fetch buffer, eager-loading, index tips.
 - [Testing](https://relaticle.github.io/activity-log/raw/advanced/testing.md): Run the package test suite locally.
 

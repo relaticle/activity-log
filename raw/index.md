@@ -69,7 +69,7 @@ Pluggable Sources
 
 <template v-slot:description="">
 
-Compose any number of sources per model — own log, related logs, timestamp columns, custom closures.
+Compose any number of sources per model - own log, related logs, timestamp columns, custom closures.
 
 </template>
 </u-page-feature>
@@ -111,7 +111,7 @@ Filament-Native UX
 
 <template v-slot:description="">
 
-Infolist component, relation manager, and header-action slide-over — drop it in wherever you need a timeline.
+Infolist component, relation manager, and header-action slide-over - drop it in wherever you need a timeline.
 
 </template>
 </u-page-feature>
@@ -146,21 +146,27 @@ Extend your Laravel applications with our ecosystem of complementary tools
 </template>
 
 <card-group>
-<card icon="i-lucide-kanban" target="_blank" title="Flowforge" to="https://relaticle.github.io/flowforge">
+<card icon="i-simple-icons-laravel" target="_blank" title="FilaForms" to="https://filaforms.app">
 
-Transform any Laravel model into a drag-and-drop Kanban board.
+![FilaForms](https://filaforms.app/img/og-image.png)
+
+Visual form builder for all your public-facing forms.
 
 </card>
 
 <card icon="i-lucide-sliders" target="_blank" title="Custom Fields" to="https://relaticle.github.io/custom-fields">
 
+![Custom Fields](https://github.com/Relaticle/custom-fields/raw/2.x/art/preview.png)
+
 Let users add custom fields to any model without code changes.
 
 </card>
 
-<card icon="i-simple-icons-laravel" target="_blank" title="FilaForms" to="https://filaforms.app">
+<card icon="i-lucide-kanban" target="_blank" title="Flowforge" to="https://relaticle.github.io/flowforge">
 
-Visual form builder for all your public-facing forms.
+![Flowforge](https://github.com/relaticle/flowforge/raw/4.x/art/preview.png)
+
+Drag-and-drop Kanban for any Laravel model.
 
 </card>
 </card-group>

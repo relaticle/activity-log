@@ -1,9 +1,10 @@
-# Configuration Reference
+# Configuration
 
-> Every key in config/activity-log.php.
+> All config keys at a glance.
+
+## `config/activity-log.php`
 
 ```php
-// config/activity-log.php
 return [
     // Default page size when ->perPage() isn't called.
     'default_per_page' => 20,
@@ -27,9 +28,8 @@ return [
     'date_groups' => ['today', 'yesterday', 'this_week', 'last_week', 'this_month', 'older'],
 
     // Event-or-type → renderer binding. Merged with bindings from the plugin/facade.
-    'renderers' => [
-        // 'email_sent' => \App\Timeline\Renderers\EmailSentRenderer::class,
-    ],
+    // 'email_sent' => EmailSentRenderer::class (add `use App\Timeline\Renderers\EmailSentRenderer;` at top of file).
+    'renderers' => [],
 
     'cache' => [
         'store'       => null,           // null = default cache store

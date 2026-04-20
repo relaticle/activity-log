@@ -1,6 +1,6 @@
 # Installation
 
-> Install the package and index the activity_log table.
+> Install and migrate the package.
 
 ## Requirements
 

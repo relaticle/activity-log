@@ -1,6 +1,6 @@
 # Quick Start
 
-> Wire HasTimeline to a model and render the timeline on a Filament resource.
+> Wire HasTimeline and render the timeline.
 
 ## 1. Mark the model as timeline-capable
 
@@ -26,8 +26,18 @@ class Person extends Model implements HasTimeline
             ->fromActivityLogOf(['emails', 'notes', 'tasks'])
             ->fromRelation('emails', function (RelatedModelSource $source): void {
                 $source
-                    ->event('sent_at', 'email_sent', icon: 'heroicon-o-paper-airplane', color: 'primary')
-                    ->event('received_at', 'email_received', icon: 'heroicon-o-inbox-arrow-down', color: 'info')
+                    ->event(
+                        column: 'sent_at',
+                        event: 'email_sent',
+                        icon: 'heroicon-o-paper-airplane',
+                        color: 'primary',
+                    )
+                    ->event(
+                        column: 'received_at',
+                        event: 'email_received',
+                        icon: 'heroicon-o-inbox-arrow-down',
+                        color: 'info',
+                    )
                     ->title(fn ($email): string => $email->subject ?? 'Email')
                     ->causer(fn ($email) => $email->from->first());
             });

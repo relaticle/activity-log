@@ -1,8 +1,10 @@
 # Tailwind
 
-> Include plugin views in your panel's theme.css source list.
+> Register plugin views in your theme.
 
-The plugin's Blade views use Tailwind utilities. If your panel has a compiled theme, include the plugin's views in its source list:
+The plugin's Blade views use Tailwind utilities. If your panel has a compiled theme, include the plugin's views in its source list.
+
+## Add the plugin views to `theme.css`
 
 ```css [resources/css/filament/{panel}/theme.css][resources/css/filament//theme.css]
 @source '../../../../vendor/relaticle/activity-log/resources/views/**/*';

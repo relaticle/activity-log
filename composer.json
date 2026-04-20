@@ -1,6 +1,6 @@
 {
     "name": "relaticle/activity-log",
-    "description": "Reusable Filament v5 plugin that renders a unified activity-log timeline for any Eloquent model.",
+    "description": "Reusable Filament plugin that renders a unified activity-log timeline for any Eloquent model",
     "type": "library",
     "license": "MIT",
     "require": {

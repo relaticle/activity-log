@@ -27,6 +27,34 @@ final class ActivityLogRelationManager extends RelationManager
 
     protected static bool $infiniteScroll = true;
 
+    private bool $groupByDate = true;
+
+    private int $perPage = 20;
+
+    public function groupByDate(bool $enabled = true): static
+    {
+        $this->groupByDate = $enabled;
+
+        return $this;
+    }
+
+    public function perPage(int $perPage): static
+    {
+        $this->perPage = $perPage;
+
+        return $this;
+    }
+
+    public function isGrouped(): bool
+    {
+        return $this->groupByDate;
+    }
+
+    public function getPerPageCount(): int
+    {
+        return $this->perPage;
+    }
+
     public function content(Schema $schema): Schema
     {
         $owner = $this->getOwnerRecord();
@@ -37,7 +65,8 @@ final class ActivityLogRelationManager extends RelationManager
                     Livewire::make(ActivityLogLivewire::class, [
                         'subjectClass' => $owner::class,
                         'subjectKey' => $owner->getKey(),
-                        'groupByDate' => true,
+                        'groupByDate' => $this->groupByDate,
+                        'perPage' => $this->perPage,
                         'infiniteScroll' => self::$infiniteScroll,
                     ])->key('activity-log-relation-manager-'.$owner->getKey()),
                 ]),

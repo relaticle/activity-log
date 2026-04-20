@@ -1,0 +1,17 @@
+# Caching
+
+> Opt-in per-call caching with explicit invalidation.
+
+Opt-in per call — disabled by default.
+
+```php
+$record->timeline()->cached(ttlSeconds: 300)->paginate();
+```
+
+Invalidate when mutations occur (consumer-driven; the plugin doesn't observe your models):
+
+```php
+$record->forgetTimelineCache();
+```
+
+Configure the cache store and key prefix in `config/activity-log.php` under `cache`.

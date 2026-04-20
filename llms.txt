@@ -1,0 +1,24 @@
+# Activity Log
+
+## Documentation Sets
+
+- [Activity Log](https://relaticle.github.io/activity-log/llms-full.txt)
+
+## Docs
+
+- [Installation](https://relaticle.github.io/activity-log/raw/getting-started/installation.md): Install the package and index the activity_log table.
+- [Quick Start](https://relaticle.github.io/activity-log/raw/getting-started/quick-start.md): Wire HasTimeline to a model and render the timeline on a Filament resource.
+- [Core Concepts](https://relaticle.github.io/activity-log/raw/essentials/core-concepts.md): The main building blocks — builder, sources, entries, renderers, and priority.
+- [Data Sources](https://relaticle.github.io/activity-log/raw/essentials/data-sources.md): Compose sources — own log, related logs, timestamp columns, custom closures.
+- [Filtering, Sorting, Dedup](https://relaticle.github.io/activity-log/raw/essentials/filtering-sorting-dedup.md): Chainable filters, sort order, and deduplication behaviour.
+- [Filament Integrations](https://relaticle.github.io/activity-log/raw/essentials/filament-integrations.md): Infolist component, relation manager, and header action.
+- [Custom Renderers](https://relaticle.github.io/activity-log/raw/customization/custom-renderers.md): Register renderers per event or type via plugin, facade, or config.
+- [Caching](https://relaticle.github.io/activity-log/raw/customization/caching.md): Opt-in per-call caching with explicit invalidation.
+- [Configuration Reference](https://relaticle.github.io/activity-log/raw/customization/configuration.md): Every key in config/activity-log.php.
+- [Tailwind](https://relaticle.github.io/activity-log/raw/customization/tailwind.md): Include plugin views in your panel's theme.css source list.
+- [Performance Notes](https://relaticle.github.io/activity-log/raw/advanced/performance.md): Over-fetch buffer, eager-loading, index tips.
+- [Testing](https://relaticle.github.io/activity-log/raw/advanced/testing.md): Run the package test suite locally.
+
+## Landing
+
+- [Filament Activity Timeline](https://relaticle.github.io/activity-log/raw/index.md): Unified chronological timeline for any Eloquent model, powered by spatie/laravel-activitylog and Filament v5.

@@ -25,7 +25,11 @@ final class ActivityLogRelationManager extends RelationManager
 
     protected static string|BackedEnum|null $icon = 'heroicon-o-clock';
 
-    protected static bool $infiniteScroll = true;
+    public static bool $infiniteScroll = true;
+
+    public static bool $groupByDate = true;
+
+    public static int $perPage = 20;
 
     public function content(Schema $schema): Schema
     {
@@ -37,7 +41,8 @@ final class ActivityLogRelationManager extends RelationManager
                     Livewire::make(ActivityLogLivewire::class, [
                         'subjectClass' => $owner::class,
                         'subjectKey' => $owner->getKey(),
-                        'groupByDate' => true,
+                        'groupByDate' => self::$groupByDate,
+                        'perPage' => self::$perPage,
                         'infiniteScroll' => self::$infiniteScroll,
                     ])->key('activity-log-relation-manager-'.$owner->getKey()),
                 ]),

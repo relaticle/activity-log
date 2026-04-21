@@ -18,6 +18,8 @@
 - [Tailwind](https://relaticle.github.io/activity-log/raw/customization/tailwind.md): Register plugin views in your theme.
 - [Performance Notes](https://relaticle.github.io/activity-log/raw/advanced/performance.md): Over-fetch buffer, eager-loading, index tips.
 - [Testing](https://relaticle.github.io/activity-log/raw/advanced/testing.md): Run the package test suite locally.
+- [Contributing](https://relaticle.github.io/activity-log/raw/community/contributing.md): How to contribute to Activity Log
+- [License](https://relaticle.github.io/activity-log/raw/community/license.md): MIT License terms and what it means for you
 
 ## Landing
 

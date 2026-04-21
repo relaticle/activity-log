@@ -42,11 +42,15 @@ public static function getRelations(): array
 
 `canViewForRecord()` always returns `true`. It declares a dummy `HasOne` relationship so it doesn't write to the DB - the page just hosts the Livewire component.
 
-The relation manager carries a `protected static bool $infiniteScroll = true` that is forwarded to the Livewire component. Flip it from a service provider if you want the opposite UX:
+Configure the relation manager via `public static` properties, overridden from a service provider:
 
 ```php
-ActivityLogRelationManager::$infiniteScroll = false;
+ActivityLogRelationManager::$groupByDate    = true; // bucket by today / this week / older
+ActivityLogRelationManager::$perPage        = 20;   // Livewire page size
+ActivityLogRelationManager::$infiniteScroll = true; // false renders a "Load more" button
 ```
+
+Static config fits the RelationManager registration model - one class per resource, configured once at boot. Subclass if you need per-resource variants.
 
 ## Header action
 

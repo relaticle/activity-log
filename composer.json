@@ -13,6 +13,7 @@
         "spatie/laravel-package-tools": "^1.16"
     },
     "require-dev": {
+        "laravel/pint": "^1.0",
         "orchestra/testbench": "^10.0",
         "pestphp/pest": "^4.0",
         "pestphp/pest-plugin-laravel": "^4.0",
@@ -34,6 +35,10 @@
                 "Relaticle\\ActivityLog\\ActivityLogServiceProvider"
             ]
         }
+    },
+    "scripts": {
+        "test": "vendor/bin/pest",
+        "pint": "vendor/bin/pint"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,

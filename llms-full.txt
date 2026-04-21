@@ -45,27 +45,6 @@ If your panel uses a custom `theme.css`, include the plugin's views so Tailwind 
 ```
 
 
-# Upgrading
-
-::callout{color="warning" icon="i-lucide-construction"}
-This page is a placeholder. Per-version upgrade notes will land here as releases ship.
-::
-
-## General upgrade workflow
-
-```bash [Terminal]
-composer update relaticle/activity-log
-```
-
-Re-publish the config if new keys are introduced:
-
-```bash [Terminal]
-php artisan vendor:publish --tag=activity-log-config --force
-```
-
-Always review the [CHANGELOG](https://github.com/relaticle/activity-log/releases){rel="&#x22;nofollow&#x22;"} before upgrading across minor versions.
-
-
 # Integration Patterns
 
 This page shows how to integrate Activity Log into a model: mark it timeline-capable, compose the sources that feed the timeline, then render the result.
@@ -393,10 +372,6 @@ Without this line, you may see unstyled or partially-styled timeline entries in 
 
 # Database Schema
 
-::callout{color="warning" icon="i-lucide-construction"}
-This page is a work-in-progress. A full schema walkthrough and ER diagram will land here; for now it lists the essentials.
-::
-
 ## Tables the plugin touches
 
 Activity Log does **not** ship its own migrations. It reads from tables already present in your application.
@@ -419,76 +394,6 @@ Without it, pagination over large logs will scan significantly more rows than ne
 ## Related-model columns
 
 When you register `fromRelation('tasks', …)->event(column: 'completed_at', …)`, the plugin queries the related table (`tasks` in this example) filtered by the configured timestamp column. Make sure those columns are indexed if the related table is large.
-
-
-# Components
-
-## Infolist component
-
-One infolist entry is shipped. It calls `$record->timeline()` and requires `HasTimeline`.
-
-```php
-use Relaticle\ActivityLog\Filament\Infolists\Components\ActivityLog;
-
-ActivityLog::make('activity')
-    ->heading('Activity')
-    ->groupByDate()                  // bucket by today / this week / older (default: true)
-    ->perPage(20)                    // Livewire page size (default: 3)
-    ->emptyState('No activity yet.') // custom empty-state message
-    ->infiniteScroll(true)           // false renders a "Load more" button (default: true)
-    ->columnSpanFull();
-```
-
-### Pagination UX: `infiniteScroll(bool)`
-
-The `infiniteScroll()` fluent flag switches the bottom control:
-
-- `true` (default) - renders a `wire:intersect` sentinel; the next page loads automatically as the user scrolls (Livewire 4).
-- `false` - renders a `Load more` button the user clicks.
-
-## Relation manager
-
-A read-only relation manager renders the activity log as a tab on the resource's view/edit page:
-
-```php
-use Relaticle\ActivityLog\Filament\RelationManagers\ActivityLogRelationManager;
-
-public static function getRelations(): array
-{
-    return [
-        ActivityLogRelationManager::class,
-    ];
-}
-```
-
-`canViewForRecord()` always returns `true`. It declares a dummy `HasOne` relationship so it doesn't write to the DB - the page just hosts the Livewire component.
-
-Configure the relation manager via `public static` properties, overridden from a service provider:
-
-```php
-ActivityLogRelationManager::$groupByDate    = true; // bucket by today / this week / older
-ActivityLogRelationManager::$perPage        = 20;   // Livewire page size
-ActivityLogRelationManager::$infiniteScroll = true; // false renders a "Load more" button
-```
-
-Static config fits the RelationManager registration model - one class per resource, configured once at boot. Subclass if you need per-resource variants.
-
-## Header action
-
-Show the activity log in a slide-over modal from any resource table or page header:
-
-```php
-use Relaticle\ActivityLog\Filament\Actions\ActivityLogAction;
-
-protected function getHeaderActions(): array
-{
-    return [
-        ActivityLogAction::make(),
-    ];
-}
-```
-
-The action opens a 2XL slide-over with the Livewire component. Customize label/icon/modal width as with any Filament action.
 
 
 # API Reference
@@ -705,67 +610,6 @@ Dedup uses `dedupKey` + `sourcePriority`. If two sources emit the same logical e
 ## Questions not covered here
 
 Open a [GitHub discussion](https://github.com/relaticle/activity-log/discussions){rel="&#x22;nofollow&#x22;"} - the maintainers and community triage there.
-
-
-# Contributing
-
-::callout{color="warning" icon="i-lucide-construction"}
-A full contributor guide is coming. The essentials below will get you running locally and pointed at the right places.
-::
-
-## Running the test suite
-
-```bash [Terminal]
-cd Plugins/ActivityLog
-composer install
-vendor/bin/pest
-```
-
-The package ships fixtures (`Person`, `Email`, `Note`, `Task`) in `tests/Fixtures/` and uses Orchestra Testbench for isolation.
-
-## Reporting bugs
-
-Open an issue on [GitHub](https://github.com/relaticle/activity-log/issues){rel="&#x22;nofollow&#x22;"}. Include:
-
-- Laravel, Filament, PHP, and `relaticle/activity-log` versions
-- A minimal reproduction (the smaller the better)
-- The actual vs expected behavior
-
-## Submitting pull requests
-
-1. Fork the repo and create a topic branch off `1.x`.
-2. Add tests that fail without your change and pass with it.
-3. Run the full suite locally before opening the PR.
-4. Describe the motivation and the user-visible impact in the PR body.
-
-## Discussions
-
-For open-ended questions, design proposals, or "is this a bug?" triage, use [GitHub Discussions](https://github.com/relaticle/activity-log/discussions){rel="&#x22;nofollow&#x22;"}.
-
-
-# License
-
-::callout{color="warning" icon="i-lucide-construction"}
-The canonical license file has not yet been committed to the repository. This page will mirror 
-
-`LICENSE.md`
-
- once it lands.
-::
-
-## Source
-
-`relaticle/activity-log` is published on [GitHub](https://github.com/relaticle/activity-log){rel="&#x22;nofollow&#x22;"} and installed via [Packagist](https://packagist.org/packages/relaticle/activity-log){rel="&#x22;nofollow&#x22;"}. Licensing terms declared in `composer.json` are authoritative until a `LICENSE.md` file is added to the repository root.
-
-## Dependencies
-
-This package builds on:
-
-- [`spatie/laravel-activitylog`](https://github.com/spatie/laravel-activitylog){rel="&#x22;nofollow&#x22;"} (MIT)
-- [Filament](https://filamentphp.com){rel="&#x22;nofollow&#x22;"} (MIT)
-- [Laravel](https://laravel.com){rel="&#x22;nofollow&#x22;"} (MIT)
-
-Each dependency retains its own license; consult their respective repositories.
 
 
 # Contributing

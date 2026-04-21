@@ -7,15 +7,11 @@
 ## Docs
 
 - [Installation](https://relaticle.github.io/activity-log/raw/getting-started/installation.md): Install and migrate the package.
-- [Upgrading](https://relaticle.github.io/activity-log/raw/getting-started/upgrading.md): Version-to-version upgrade notes.
 - [Integration Patterns](https://relaticle.github.io/activity-log/raw/essentials/integration-patterns.md): Wire HasTimeline, compose sources, and render the feed.
 - [Customization](https://relaticle.github.io/activity-log/raw/essentials/customization.md): Brand the timeline - custom renderers and Tailwind theme integration.
 - [Database Schema](https://relaticle.github.io/activity-log/raw/essentials/database-schema.md): Tables the plugin reads from and the indexes it needs.
-- [Components](https://relaticle.github.io/activity-log/raw/essentials/components.md): Infolist component, relation manager, and header action.
-- [API Reference](https://relaticle.github.io/activity-log/raw/reference/api-reference.md): Components, builder refinements, config keys, and caching API.
-- [Troubleshooting](https://relaticle.github.io/activity-log/raw/reference/troubleshooting.md): Common pitfalls, performance tuning, and debugging tips.
-- [Contributing](https://relaticle.github.io/activity-log/raw/community/contributing.md): Run the suite, follow conventions, and submit changes.
-- [License](https://relaticle.github.io/activity-log/raw/community/license.md): Licensing terms for relaticle/activity-log.
+- [API Reference](https://relaticle.github.io/activity-log/raw/essentials/api-reference.md): Components, builder refinements, config keys, and caching API.
+- [Troubleshooting](https://relaticle.github.io/activity-log/raw/essentials/troubleshooting.md): Common pitfalls, performance tuning, and debugging tips.
 - [Contributing](https://relaticle.github.io/activity-log/raw/community/contributing.md): How to contribute to Activity Log
 - [License](https://relaticle.github.io/activity-log/raw/community/license.md): MIT License terms and what it means for you
 

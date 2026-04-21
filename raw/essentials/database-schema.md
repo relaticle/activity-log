@@ -2,12 +2,6 @@
 
 > Tables the plugin reads from and the indexes it needs.
 
-<callout color="warning" icon="i-lucide-construction">
-
-This page is a work-in-progress. A full schema walkthrough and ER diagram will land here; for now it lists the essentials.
-
-</callout>
-
 ## Tables the plugin touches
 
 Activity Log does **not** ship its own migrations. It reads from tables already present in your application.

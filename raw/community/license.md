@@ -1,23 +1,36 @@
 # License
 
-> Licensing terms for relaticle/activity-log.
+> MIT License terms and what it means for you
 
-<callout color="warning" icon="i-lucide-construction">
+## MIT License
 
-The canonical license file has not yet been committed to the repository. This page will mirror `LICENSE.md` once it lands.
+```text
+Copyright (c) Relaticle
 
-</callout>
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-## Source
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
-`relaticle/activity-log` is published on [GitHub](https://github.com/relaticle/activity-log) and installed via [Packagist](https://packagist.org/packages/relaticle/activity-log). Licensing terms declared in `composer.json` are authoritative until a `LICENSE.md` file is added to the repository root.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+```
 
-## Dependencies
+## What This Means
 
-This package builds on:
+- **You can** use Activity Log in commercial projects
+- **You can** modify and distribute it
+- **You can** use it in closed source projects
+- **You can** sell applications that include it
 
-- [`spatie/laravel-activitylog`](https://github.com/spatie/laravel-activitylog) (MIT)
-- [Filament](https://filamentphp.com) (MIT)
-- [Laravel](https://laravel.com) (MIT)
-
-Each dependency retains its own license; consult their respective repositories.
+Just include the license notice in your copy. That's it!

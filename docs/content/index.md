@@ -17,7 +17,7 @@ Aggregates spatie activity logs, related-model timestamps, and custom sources in
 #links
   :::u-button
   ---
-  color: neutral
+  color: primary
   size: xl
   to: /getting-started/installation
   trailing-icon: i-lucide-arrow-right

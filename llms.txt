@@ -7,17 +7,15 @@
 ## Docs
 
 - [Installation](https://relaticle.github.io/activity-log/raw/getting-started/installation.md): Install and migrate the package.
-- [Quick Start](https://relaticle.github.io/activity-log/raw/getting-started/quick-start.md): Wire HasTimeline and render the timeline.
-- [Core Concepts](https://relaticle.github.io/activity-log/raw/essentials/core-concepts.md): Builder, sources, entries, and renderers.
-- [Data Sources](https://relaticle.github.io/activity-log/raw/essentials/data-sources.md): Compose sources for your timeline.
-- [Refining the Timeline](https://relaticle.github.io/activity-log/raw/essentials/refining-the-timeline.md): Filters, sorting, and deduplication.
+- [Upgrading](https://relaticle.github.io/activity-log/raw/getting-started/upgrading.md): Version-to-version upgrade notes.
+- [Integration Patterns](https://relaticle.github.io/activity-log/raw/essentials/integration-patterns.md): Wire HasTimeline, compose sources, and render the feed.
+- [Customization](https://relaticle.github.io/activity-log/raw/essentials/customization.md): Brand the timeline - custom renderers and Tailwind theme integration.
+- [Database Schema](https://relaticle.github.io/activity-log/raw/essentials/database-schema.md): Tables the plugin reads from and the indexes it needs.
 - [Components](https://relaticle.github.io/activity-log/raw/essentials/components.md): Infolist component, relation manager, and header action.
-- [Custom Renderers](https://relaticle.github.io/activity-log/raw/customization/custom-renderers.md): Register renderers per event or type.
-- [Caching](https://relaticle.github.io/activity-log/raw/customization/caching.md): Opt-in per-call caching.
-- [Configuration](https://relaticle.github.io/activity-log/raw/customization/configuration.md): All config keys at a glance.
-- [Tailwind](https://relaticle.github.io/activity-log/raw/customization/tailwind.md): Register plugin views in your theme.
-- [Performance Notes](https://relaticle.github.io/activity-log/raw/advanced/performance.md): Over-fetch buffer, eager-loading, index tips.
-- [Testing](https://relaticle.github.io/activity-log/raw/advanced/testing.md): Run the package test suite locally.
+- [API Reference](https://relaticle.github.io/activity-log/raw/reference/api-reference.md): Components, builder refinements, config keys, and caching API.
+- [Troubleshooting](https://relaticle.github.io/activity-log/raw/reference/troubleshooting.md): Common pitfalls, performance tuning, and debugging tips.
+- [Contributing](https://relaticle.github.io/activity-log/raw/community/contributing.md): Run the suite, follow conventions, and submit changes.
+- [License](https://relaticle.github.io/activity-log/raw/community/license.md): Licensing terms for relaticle/activity-log.
 - [Contributing](https://relaticle.github.io/activity-log/raw/community/contributing.md): How to contribute to Activity Log
 - [License](https://relaticle.github.io/activity-log/raw/community/license.md): MIT License terms and what it means for you
 

@@ -45,11 +45,34 @@ If your panel uses a custom `theme.css`, include the plugin's views so Tailwind 
 ```
 
 
-# Quick Start
+# Upgrading
+
+::callout{color="warning" icon="i-lucide-construction"}
+This page is a placeholder. Per-version upgrade notes will land here as releases ship.
+::
+
+## General upgrade workflow
+
+```bash [Terminal]
+composer update relaticle/activity-log
+```
+
+Re-publish the config if new keys are introduced:
+
+```bash [Terminal]
+php artisan vendor:publish --tag=activity-log-config --force
+```
+
+Always review the [CHANGELOG](https://github.com/relaticle/activity-log/releases){rel="&#x22;nofollow&#x22;"} before upgrading across minor versions.
+
+
+# Integration Patterns
+
+This page shows how to integrate Activity Log into a model: mark it timeline-capable, compose the sources that feed the timeline, then render the result.
 
 ## 1. Mark the model as timeline-capable
 
-Implement the `HasTimeline` contract, use the `InteractsWithTimeline` trait for the helper methods, and define a `timeline(): TimelineBuilder` method:
+Implement the `HasTimeline` contract, use the `InteractsWithTimeline` trait, and define a `timeline(): TimelineBuilder` method:
 
 ```php
 use Illuminate\Database\Eloquent\Model;
@@ -90,28 +113,7 @@ class Person extends Model implements HasTimeline
 }
 ```
 
-## 2. Render the timeline
-
-```php
-use Filament\Schemas\Schema;
-use Relaticle\ActivityLog\Filament\Infolists\Components\ActivityLog;
-
-public static function infolist(Schema $schema): Schema
-{
-    return $schema->components([
-        ActivityLog::make('activity')
-            ->heading('Activity')
-            ->groupByDate()
-            ->perPage(20)
-            ->columnSpanFull(),
-    ]);
-}
-```
-
-That's the minimum wiring. The [Essentials](https://relaticle.github.io/activity-log/essentials/core-concepts) and [Customization](https://relaticle.github.io/activity-log/customization/custom-renderers) sections cover the rest.
-
-
-# Core Concepts
+## 2. Core building blocks
 
 | Concept                | What it represents                                                                                                                                    |
 | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -121,7 +123,7 @@ That's the minimum wiring. The [Essentials](https://relaticle.github.io/activity
 | **`TimelineRenderer`** | Converts a `TimelineEntry` into a Blade `View` or `HtmlString`. Register custom ones per `event` or `type`.                                           |
 | **Priority**           | Each source carries a priority; on `dedupKey` collisions the higher one wins.                                                                         |
 
-## Default source priorities
+### Default source priorities
 
 | Source                 | Priority |
 | ---------------------- | -------- |
@@ -130,12 +132,11 @@ That's the minimum wiring. The [Essentials](https://relaticle.github.io/activity
 | `related_model`        | 20       |
 | `custom`               | 30       |
 
+## 3. Source patterns
 
-# Data Sources
+All sources are registered fluently on `TimelineBuilder`. Mix any number of them in one timeline.
 
-All sources are registered fluently on `TimelineBuilder`. You can mix any number of them in one timeline.
-
-## The record's own spatie log
+### The record's own spatie log
 
 Use `fromActivityLog()` to pull the subject's own `activity_log` rows:
 
@@ -145,7 +146,7 @@ TimelineBuilder::make($this)->fromActivityLog();
 
 Reads rows from `activity_log` where `subject_type` + `subject_id` match `$this`. Entry `event` = the spatie `event` column (or `description` as fallback).
 
-## Related models' spatie logs
+### Related models' spatie logs
 
 Use `fromActivityLogOf(array $relations)` to include spatie logs from related records:
 
@@ -155,7 +156,7 @@ TimelineBuilder::make($this)->fromActivityLogOf(['emails', 'notes', 'tasks']);
 
 For each named relation, reads `activity_log` rows whose subject matches any related record. Useful for "show me everything that happened to anything attached to this person."
 
-## Timestamp columns on related models
+### Timestamp columns on related models
 
 Use `fromRelation(string $relation, Closure $configure)` to turn rows on a related model into timeline entries keyed by a timestamp column. Ideal when related records already carry canonical timestamps (`sent_at`, `completed_at`, `created_at`) and you don't need spatie-style change logs.
 
@@ -184,7 +185,7 @@ Use `fromRelation(string $relation, Closure $configure)` to turn rows on a relat
 })
 ```
 
-### `RelatedModelSource` API
+#### `RelatedModelSource` API
 
 | Method                                            | Purpose                                                                                            |
 | ------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
@@ -194,7 +195,7 @@ Use `fromRelation(string $relation, Closure $configure)` to turn rows on a relat
 | `title($resolver)` / `description($resolver)`     | Per-row resolver for display fields.                                                               |
 | `causer($resolver)`                               | Relation-name string, or Closure returning `Model|null`.                                           |
 
-## Custom or external data
+### Custom or external data
 
 Use `fromCustom(Closure $resolver)` when the data isn't in `activity_log` and isn't a relation (e.g. entries coming from an external API). Yield your own `TimelineEntry` objects:
 
@@ -221,7 +222,7 @@ Use `fromCustom(Closure $resolver)` when the data isn't in `activity_log` and is
 })
 ```
 
-## Reusable custom source classes
+### Reusable custom source classes
 
 Use `addSource(TimelineSource $source)` for sources you want to reuse across models. Implement `Relaticle\ActivityLog\Contracts\TimelineSource` and pass it directly - useful when the resolution logic warrants its own class.
 
@@ -278,54 +279,146 @@ public function timeline(): TimelineBuilder
 }
 ```
 
+## 4. Render the timeline
 
-# Refining the Timeline
-
-Every refinement is a chainable method on `TimelineBuilder`. Compose only what you need - each section below covers one concern.
-
-## Filtering
-
-Narrow the entries by date window, type, or event. All four filters stack and are cumulative.
+Drop the infolist component onto any resource that owns a timeline-capable model:
 
 ```php
-$record->timeline()
-    ->between(now()->subMonth(), now())         // CarbonInterface|null on each side
-    ->ofType(['related_model', 'activity_log']) // type allow-list
-    ->exceptType(['custom'])                    // type deny-list
-    ->ofEvent(['email_sent', 'task_completed']) // event allow-list
-    ->exceptEvent(['draft_saved']);             // event deny-list
+use Filament\Schemas\Schema;
+use Relaticle\ActivityLog\Filament\Infolists\Components\ActivityLog;
+
+public static function infolist(Schema $schema): Schema
+{
+    return $schema->components([
+        ActivityLog::make('activity')
+            ->heading('Activity')
+            ->groupByDate()
+            ->perPage(20)
+            ->columnSpanFull(),
+    ]);
+}
 ```
 
-## Sorting
+See the [API Reference](https://relaticle.github.io/activity-log/reference/api-reference) for every component, filter, and configuration knob; see [Customization](https://relaticle.github.io/activity-log/essentials/customization) to theme the output.
 
-Order the combined stream after sources are merged.
+
+# Customization
+
+The timeline's look and feel is pluggable at two levels: **renderers** control the markup of each entry, and the **Tailwind theme** controls the utility classes available to Blade views.
+
+## Custom renderers
+
+Out of the box, entries from spatie's activity log render via the built-in `ActivityLogRenderer` (which understands `updated`/`created`/etc. events and renders field diffs), and everything else falls back to `DefaultRenderer` (title, description, causer, relative time, colored icon). For branded output per event type, register a custom renderer.
+
+### Registering via the panel plugin
 
 ```php
-$record->timeline()
-    ->sortByDateDesc(); // default; use sortByDateAsc() for ascending
+use App\Timeline\Renderers\EmailSentRenderer;
+use Illuminate\Support\HtmlString;
+use Relaticle\ActivityLog\Filament\ActivityLogPlugin;
+
+$panel->plugin(
+    ActivityLogPlugin::make()->renderers([
+        'email_sent' => EmailSentRenderer::class,
+        'note_added' => 'my-app::timeline.note-added',          // view name
+        'task_done'  => fn ($entry) => new HtmlString('...'),   // closure
+    ]),
+);
 ```
 
-## Deduplication
-
-Entries sharing a `dedupKey` collapse to the highest `sourcePriority` (first occurrence wins on ties). Disable entirely, or override the key when the default identity isn't right for your use case.
+### Registering via the facade (e.g., from a service provider)
 
 ```php
-$record->timeline()
-    ->deduplicate(true) // default: true - pass false to keep every entry
-    ->dedupKeyUsing(fn ($entry) =>
-        "{$entry->type}:{$entry->event}:{$entry->occurredAt->toDateString()}"
-    );
+use App\Timeline\Renderers\EmailSentRenderer;
+use Illuminate\Support\HtmlString;
+use Relaticle\ActivityLog\Facades\Timeline;
+
+Timeline::registerRenderer('email_sent', EmailSentRenderer::class);
+Timeline::registerRenderer('note_added', 'my-app::timeline.note-added');
+Timeline::registerRenderer('task_done', fn ($entry) => new HtmlString('...'));
 ```
 
-## Running the query
+### Registering via config
 
-After filters/sort/dedup are set, one of these methods executes and returns entries.
+```php
+// config/activity-log.php
+use App\Timeline\Renderers\EmailSentRenderer;
 
-| Method                                   | Returns                                                                                                 |
-| ---------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| `get()`                                  | `Collection<int, TimelineEntry>` - all entries up to the internal 10 000 cap.                           |
-| `paginate(?int $perPage, int $page = 1)` | `LengthAwarePaginator<int, TimelineEntry>`. Uses `activity-log.default_per_page` if `$perPage` is null. |
-| `count()`                                | `int` (runs `get()`).                                                                                   |
+'renderers' => [
+    'email_sent' => EmailSentRenderer::class,
+],
+```
+
+### Renderer resolution order
+
+For each `TimelineEntry`, the registry checks:
+
+1. `$entry->renderer` (an explicit override the source set)
+2. `bindings[$entry->event]`
+3. `bindings[$entry->type]`
+4. `DefaultRenderer` fallback
+
+### Renderer forms
+
+A renderer binding can be any of:
+
+- **Class string** implementing `Relaticle\ActivityLog\Contracts\TimelineRenderer`
+- **Closure** `fn (TimelineEntry $entry): View|HtmlString => ...`
+- **View name** (e.g., `'my-app::timeline.email-sent'`) - receives `$entry` in scope
+
+```php
+use Illuminate\Contracts\View\View;
+use Relaticle\ActivityLog\Contracts\TimelineRenderer;
+use Relaticle\ActivityLog\Timeline\TimelineEntry;
+
+final class EmailSentRenderer implements TimelineRenderer
+{
+    public function render(TimelineEntry $entry): View
+    {
+        return view('app.timeline.email-sent', ['entry' => $entry]);
+    }
+}
+```
+
+## Tailwind theme integration
+
+The plugin's Blade views use Tailwind utilities. If your panel has a compiled theme, include the plugin's views in its source list so the utilities actually get compiled:
+
+```css [resources/css/filament/{panel}/theme.css] {0} [resources/css/filament//theme.css]
+@source '../../../../vendor/relaticle/activity-log/resources/views/**/*';
+```
+
+Without this line, you may see unstyled or partially-styled timeline entries in production builds.
+
+
+# Database Schema
+
+::callout{color="warning" icon="i-lucide-construction"}
+This page is a work-in-progress. A full schema walkthrough and ER diagram will land here; for now it lists the essentials.
+::
+
+## Tables the plugin touches
+
+Activity Log does **not** ship its own migrations. It reads from tables already present in your application.
+
+| Table               | Owner                        | Role                                                                      |
+| ------------------- | ---------------------------- | ------------------------------------------------------------------------- |
+| `activity_log`      | `spatie/laravel-activitylog` | Primary source of `activity_log` and `related_activity_log` entries.      |
+| Your related tables | Your app                     | Sources registered via `fromRelation()` read their own timestamp columns. |
+
+## Required index
+
+For responsive timeline queries on `activity_log`, add this compound index:
+
+```php
+$table->index(['subject_type', 'subject_id', 'created_at']);
+```
+
+Without it, pagination over large logs will scan significantly more rows than necessary.
+
+## Related-model columns
+
+When you register `fromRelation('tasks', …)->event(column: 'completed_at', …)`, the plugin queries the related table (`tasks` in this example) filtered by the configured timestamp column. Make sure those columns are indexed if the related table is large.
 
 
 # Components
@@ -398,92 +491,134 @@ protected function getHeaderActions(): array
 The action opens a 2XL slide-over with the Livewire component. Customize label/icon/modal width as with any Filament action.
 
 
-# Custom Renderers
+# API Reference
 
-Out of the box, entries from spatie's activity log render via the built-in `ActivityLogRenderer` (which understands `updated`/`created`/etc. events and renders field diffs), and everything else falls back to `DefaultRenderer` (title, description, causer, relative time, colored icon). For branded output per event type, register a custom renderer.
+A reference for every public surface: Filament components, the `TimelineBuilder` refinement API, configuration keys, and caching.
 
-## Registering via the panel plugin
+## Filament components
+
+### Infolist component
+
+One infolist entry is shipped. It calls `$record->timeline()` and requires `HasTimeline`.
 
 ```php
-use App\Timeline\Renderers\EmailSentRenderer;
-use Illuminate\Support\HtmlString;
-use Relaticle\ActivityLog\Filament\ActivityLogPlugin;
+use Relaticle\ActivityLog\Filament\Infolists\Components\ActivityLog;
 
-$panel->plugin(
-    ActivityLogPlugin::make()->renderers([
-        'email_sent' => EmailSentRenderer::class,
-        'note_added' => 'my-app::timeline.note-added',          // view name
-        'task_done'  => fn ($entry) => new HtmlString('...'),   // closure
-    ]),
-);
+ActivityLog::make('activity')
+    ->heading('Activity')
+    ->groupByDate()                  // bucket by today / this week / older (default: true)
+    ->perPage(20)                    // Livewire page size (default: 3)
+    ->emptyState('No activity yet.') // custom empty-state message
+    ->infiniteScroll(true)           // false renders a "Load more" button (default: true)
+    ->columnSpanFull();
 ```
 
-## Registering via the facade (e.g., from a service provider)
+#### Pagination UX: `infiniteScroll(bool)`
+
+The `infiniteScroll()` fluent flag switches the bottom control:
+
+- `true` (default) - renders a `wire:intersect` sentinel; the next page loads automatically as the user scrolls (Livewire 4).
+- `false` - renders a `Load more` button the user clicks.
+
+### Relation manager
+
+A read-only relation manager renders the activity log as a tab on the resource's view/edit page:
 
 ```php
-use App\Timeline\Renderers\EmailSentRenderer;
-use Illuminate\Support\HtmlString;
-use Relaticle\ActivityLog\Facades\Timeline;
+use Relaticle\ActivityLog\Filament\RelationManagers\ActivityLogRelationManager;
 
-Timeline::registerRenderer('email_sent', EmailSentRenderer::class);
-Timeline::registerRenderer('note_added', 'my-app::timeline.note-added');
-Timeline::registerRenderer('task_done', fn ($entry) => new HtmlString('...'));
-```
-
-## Registering via config
-
-```php
-// config/activity-log.php
-use App\Timeline\Renderers\EmailSentRenderer;
-
-'renderers' => [
-    'email_sent' => EmailSentRenderer::class,
-],
-```
-
-## Renderer resolution order
-
-For each `TimelineEntry`, the registry checks:
-
-1. `$entry->renderer` (an explicit override the source set)
-2. `bindings[$entry->event]`
-3. `bindings[$entry->type]`
-4. `DefaultRenderer` fallback
-
-## Renderer forms
-
-A renderer binding can be any of:
-
-- **Class string** implementing `Relaticle\ActivityLog\Contracts\TimelineRenderer`
-- **Closure** `fn (TimelineEntry $entry): View|HtmlString => ...`
-- **View name** (e.g., `'my-app::timeline.email-sent'`) - receives `$entry` in scope
-
-```php
-use Illuminate\Contracts\View\View;
-use Relaticle\ActivityLog\Contracts\TimelineRenderer;
-use Relaticle\ActivityLog\Timeline\TimelineEntry;
-
-final class EmailSentRenderer implements TimelineRenderer
+public static function getRelations(): array
 {
-    public function render(TimelineEntry $entry): View
-    {
-        return view('app.timeline.email-sent', ['entry' => $entry]);
-    }
+    return [
+        ActivityLogRelationManager::class,
+    ];
 }
 ```
 
+`canViewForRecord()` always returns `true`. It declares a dummy `HasOne` relationship so it doesn't write to the DB - the page just hosts the Livewire component.
 
-# Caching
+The relation manager carries a `protected static bool $infiniteScroll = true` that is forwarded to the Livewire component. Flip it from a service provider if you want the opposite UX:
+
+```php
+ActivityLogRelationManager::$infiniteScroll = false;
+```
+
+### Header action
+
+Show the activity log in a slide-over modal from any resource table or page header:
+
+```php
+use Relaticle\ActivityLog\Filament\Actions\ActivityLogAction;
+
+protected function getHeaderActions(): array
+{
+    return [
+        ActivityLogAction::make(),
+    ];
+}
+```
+
+The action opens a 2XL slide-over with the Livewire component. Customize label/icon/modal width as with any Filament action.
+
+## Refining the timeline
+
+Every refinement is a chainable method on `TimelineBuilder`. Compose only what you need - each section below covers one concern.
+
+### Filtering
+
+Narrow the entries by date window, type, or event. All four filters stack and are cumulative.
+
+```php
+$record->timeline()
+    ->between(now()->subMonth(), now())         // CarbonInterface|null on each side
+    ->ofType(['related_model', 'activity_log']) // type allow-list
+    ->exceptType(['custom'])                    // type deny-list
+    ->ofEvent(['email_sent', 'task_completed']) // event allow-list
+    ->exceptEvent(['draft_saved']);             // event deny-list
+```
+
+### Sorting
+
+Order the combined stream after sources are merged.
+
+```php
+$record->timeline()
+    ->sortByDateDesc(); // default; use sortByDateAsc() for ascending
+```
+
+### Deduplication
+
+Entries sharing a `dedupKey` collapse to the highest `sourcePriority` (first occurrence wins on ties). Disable entirely, or override the key when the default identity isn't right for your use case.
+
+```php
+$record->timeline()
+    ->deduplicate(true) // default: true - pass false to keep every entry
+    ->dedupKeyUsing(fn ($entry) =>
+        "{$entry->type}:{$entry->event}:{$entry->occurredAt->toDateString()}"
+    );
+```
+
+### Running the query
+
+After filters/sort/dedup are set, one of these methods executes and returns entries.
+
+| Method                                   | Returns                                                                                                 |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `get()`                                  | `Collection<int, TimelineEntry>` - all entries up to the internal 10 000 cap.                           |
+| `paginate(?int $perPage, int $page = 1)` | `LengthAwarePaginator<int, TimelineEntry>`. Uses `activity-log.default_per_page` if `$perPage` is null. |
+| `count()`                                | `int` (runs `get()`).                                                                                   |
+
+## Caching
 
 Opt-in per call - disabled by default.
 
-## Caching a query
+### Caching a query
 
 ```php
 $record->timeline()->cached(ttlSeconds: 300)->paginate();
 ```
 
-## Invalidating the cache
+### Invalidating the cache
 
 Invalidate when mutations occur (consumer-driven; the plugin doesn't observe your models):
 
@@ -491,14 +626,13 @@ Invalidate when mutations occur (consumer-driven; the plugin doesn't observe you
 $record->forgetTimelineCache();
 ```
 
-## Cache store and prefix
+### Cache store and prefix
 
-Configure the cache store and key prefix in `config/activity-log.php` under `cache`.
+Configure the cache store and key prefix in `config/activity-log.php` under `cache` (see [Configuration](https://relaticle.github.io/activity-log/#configuration) below).
 
+## Configuration
 
-# Configuration
-
-## `config/activity-log.php`
+All config keys live in `config/activity-log.php`:
 
 ```php
 return [
@@ -536,34 +670,102 @@ return [
 ```
 
 
-# Tailwind
+# Troubleshooting
 
-The plugin's Blade views use Tailwind utilities. If your panel has a compiled theme, include the plugin's views in its source list.
+::callout{color="warning" icon="i-lucide-construction"}
+This page will grow with FAQ entries as users report issues. Start here, then open a discussion on GitHub if your problem isn't covered.
+::
 
-## Add the plugin views to `theme.css`
-
-```css [resources/css/filament/{panel}/theme.css] {0} [resources/css/filament//theme.css]
-@source '../../../../vendor/relaticle/activity-log/resources/views/**/*';
-```
-
-
-# Performance Notes
+## Performance
 
 - Every source batch-loads; no N+1 in the core path. Use `->with([...])` on `RelatedModelSource` if your renderer/title resolver reads relations.
 - Pagination over-fetches by `perPage × (page + pagination_buffer)` per source so dedup/filtering stays correct at higher pages. Tune `pagination_buffer` if your sources rarely collide.
-- `get()` is capped at 10 000 entries. For unbounded history, paginate.
+- `get()` is capped at 10 000 entries. For unbounded history, paginate instead.
 - Add the `['subject_type', 'subject_id', 'created_at']` compound index on `activity_log`.
 
+## Timeline looks unstyled in production
 
-# Testing
+The plugin's Blade views use Tailwind utilities. If you see plain HTML, your panel theme isn't compiling the plugin's views. Add the `@source` directive described in [Customization → Tailwind theme integration](https://relaticle.github.io/activity-log/essentials/customization#tailwind-theme-integration).
 
-```bash
+## Custom renderer isn't picked up
+
+Check the resolution order in [Customization → Renderer resolution order](https://relaticle.github.io/activity-log/essentials/customization#renderer-resolution-order). Most often:
+
+- The binding key is the `event` string, not a class name - verify `$entry->event` matches.
+- An entry-level `$entry->renderer` override beats registered bindings.
+- Config-file bindings merge with plugin/facade bindings; duplicates resolve in plugin-then-config order.
+
+## Duplicate entries appearing
+
+Dedup uses `dedupKey` + `sourcePriority`. If two sources emit the same logical event with different keys, they won't collapse. Either:
+
+- Align `dedupKey` on both sources (use `dedupKeyUsing()` on the builder), or
+- Raise the preferred source's priority so the loser is dropped.
+
+## Questions not covered here
+
+Open a [GitHub discussion](https://github.com/relaticle/activity-log/discussions){rel="&#x22;nofollow&#x22;"} - the maintainers and community triage there.
+
+
+# Contributing
+
+::callout{color="warning" icon="i-lucide-construction"}
+A full contributor guide is coming. The essentials below will get you running locally and pointed at the right places.
+::
+
+## Running the test suite
+
+```bash [Terminal]
 cd Plugins/ActivityLog
 composer install
 vendor/bin/pest
 ```
 
 The package ships fixtures (`Person`, `Email`, `Note`, `Task`) in `tests/Fixtures/` and uses Orchestra Testbench for isolation.
+
+## Reporting bugs
+
+Open an issue on [GitHub](https://github.com/relaticle/activity-log/issues){rel="&#x22;nofollow&#x22;"}. Include:
+
+- Laravel, Filament, PHP, and `relaticle/activity-log` versions
+- A minimal reproduction (the smaller the better)
+- The actual vs expected behavior
+
+## Submitting pull requests
+
+1. Fork the repo and create a topic branch off `1.x`.
+2. Add tests that fail without your change and pass with it.
+3. Run the full suite locally before opening the PR.
+4. Describe the motivation and the user-visible impact in the PR body.
+
+## Discussions
+
+For open-ended questions, design proposals, or "is this a bug?" triage, use [GitHub Discussions](https://github.com/relaticle/activity-log/discussions){rel="&#x22;nofollow&#x22;"}.
+
+
+# License
+
+::callout{color="warning" icon="i-lucide-construction"}
+The canonical license file has not yet been committed to the repository. This page will mirror 
+
+`LICENSE.md`
+
+ once it lands.
+::
+
+## Source
+
+`relaticle/activity-log` is published on [GitHub](https://github.com/relaticle/activity-log){rel="&#x22;nofollow&#x22;"} and installed via [Packagist](https://packagist.org/packages/relaticle/activity-log){rel="&#x22;nofollow&#x22;"}. Licensing terms declared in `composer.json` are authoritative until a `LICENSE.md` file is added to the repository root.
+
+## Dependencies
+
+This package builds on:
+
+- [`spatie/laravel-activitylog`](https://github.com/spatie/laravel-activitylog){rel="&#x22;nofollow&#x22;"} (MIT)
+- [Filament](https://filamentphp.com){rel="&#x22;nofollow&#x22;"} (MIT)
+- [Laravel](https://laravel.com){rel="&#x22;nofollow&#x22;"} (MIT)
+
+Each dependency retains its own license; consult their respective repositories.
 
 
 # Contributing
@@ -651,7 +853,7 @@ Aggregates spatie activity logs, related-model timestamps, and custom sources in
 #links
   :::u-button
   ---
-  color: neutral
+  color: primary
   size: xl
   to: https://relaticle.github.io/activity-log/getting-started/installation
   trailing-icon: i-lucide-arrow-right

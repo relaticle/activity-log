@@ -1,35 +1,38 @@
 # Contributing
 
-> How to contribute to Activity Log
+> Run the suite, follow conventions, and submit changes.
 
-## Quick Start
+<callout color="warning" icon="i-lucide-construction">
 
-1. **Fork** the repository
-2. **Create** a feature branch
-3. **Make** your changes
-4. **Run** tests: `composer test`
-5. **Submit** a pull request
+A full contributor guide is coming. The essentials below will get you running locally and pointed at the right places.
 
-## Guidelines
+</callout>
 
-- Follow the existing code style
-- Add tests for new features (Pest)
-- Update documentation as needed
-- One feature per pull request
+## Running the test suite
 
-## Development Commands
-
-```bash
-# Run tests
-composer test
-
-# Format code
-composer pint
+```bash [Terminal]
+cd Plugins/ActivityLog
+composer install
+vendor/bin/pest
 ```
 
-## Need Help?
+The package ships fixtures (`Person`, `Email`, `Note`, `Task`) in `tests/Fixtures/` and uses Orchestra Testbench for isolation.
 
-- [Open an issue](https://github.com/relaticle/activity-log/issues) for bugs or questions
-- Check [existing issues](https://github.com/relaticle/activity-log/issues) first
+## Reporting bugs
 
-That's it! Keep it simple and focused.
+Open an issue on [GitHub](https://github.com/relaticle/activity-log/issues). Include:
+
+- Laravel, Filament, PHP, and `relaticle/activity-log` versions
+- A minimal reproduction (the smaller the better)
+- The actual vs expected behavior
+
+## Submitting pull requests
+
+1. Fork the repo and create a topic branch off `1.x`.
+2. Add tests that fail without your change and pass with it.
+3. Run the full suite locally before opening the PR.
+4. Describe the motivation and the user-visible impact in the PR body.
+
+## Discussions
+
+For open-ended questions, design proposals, or "is this a bug?" triage, use [GitHub Discussions](https://github.com/relaticle/activity-log/discussions).

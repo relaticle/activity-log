@@ -18,7 +18,7 @@ Aggregates spatie activity logs, related-model timestamps, and custom sources in
 </template>
 
 <template v-slot:links="">
-<u-button color="neutral" size="xl" to="/getting-started/installation" trailing-icon="i-lucide-arrow-right">
+<u-button color="primary" size="xl" to="/getting-started/installation" trailing-icon="i-lucide-arrow-right">
 
 Get started
 

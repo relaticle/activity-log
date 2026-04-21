@@ -1,0 +1,39 @@
+# Troubleshooting
+
+> Common pitfalls, performance tuning, and debugging tips.
+
+<callout color="warning" icon="i-lucide-construction">
+
+This page will grow with FAQ entries as users report issues. Start here, then open a discussion on GitHub if your problem isn't covered.
+
+</callout>
+
+## Performance
+
+- Every source batch-loads; no N+1 in the core path. Use `->with([...])` on `RelatedModelSource` if your renderer/title resolver reads relations.
+- Pagination over-fetches by `perPage × (page + pagination_buffer)` per source so dedup/filtering stays correct at higher pages. Tune `pagination_buffer` if your sources rarely collide.
+- `get()` is capped at 10 000 entries. For unbounded history, paginate instead.
+- Add the `['subject_type', 'subject_id', 'created_at']` compound index on `activity_log`.
+
+## Timeline looks unstyled in production
+
+The plugin's Blade views use Tailwind utilities. If you see plain HTML, your panel theme isn't compiling the plugin's views. Add the `@source` directive described in [Customization → Tailwind theme integration](/essentials/customization#tailwind-theme-integration).
+
+## Custom renderer isn't picked up
+
+Check the resolution order in [Customization → Renderer resolution order](/essentials/customization#renderer-resolution-order). Most often:
+
+- The binding key is the `event` string, not a class name - verify `$entry->event` matches.
+- An entry-level `$entry->renderer` override beats registered bindings.
+- Config-file bindings merge with plugin/facade bindings; duplicates resolve in plugin-then-config order.
+
+## Duplicate entries appearing
+
+Dedup uses `dedupKey` + `sourcePriority`. If two sources emit the same logical event with different keys, they won't collapse. Either:
+
+- Align `dedupKey` on both sources (use `dedupKeyUsing()` on the builder), or
+- Raise the preferred source's priority so the loser is dropped.
+
+## Questions not covered here
+
+Open a [GitHub discussion](https://github.com/relaticle/activity-log/discussions) - the maintainers and community triage there.

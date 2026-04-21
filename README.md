@@ -105,7 +105,15 @@ Drag-and-drop Kanban for any Laravel model.
 
 ## Contributing
 
-Contributions are welcome. Please submit a Pull Request.
+Contributions are welcome. Please see [CONTRIBUTING.md](.github/CONTRIBUTING.md) before opening an issue or pull request.
+
+## Security
+
+If you discover a security issue, please review our [Security Policy](.github/SECURITY.md).
+
+## Changelog
+
+Please see [CHANGELOG.md](CHANGELOG.md) for recent changes.
 
 ## License
 

@@ -25,35 +25,11 @@ final class ActivityLogRelationManager extends RelationManager
 
     protected static string|BackedEnum|null $icon = 'heroicon-o-clock';
 
-    protected static bool $infiniteScroll = true;
+    public static bool $infiniteScroll = true;
 
-    private bool $groupByDate = true;
+    public static bool $groupByDate = true;
 
-    private int $perPage = 20;
-
-    public function groupByDate(bool $enabled = true): static
-    {
-        $this->groupByDate = $enabled;
-
-        return $this;
-    }
-
-    public function perPage(int $perPage): static
-    {
-        $this->perPage = $perPage;
-
-        return $this;
-    }
-
-    public function isGrouped(): bool
-    {
-        return $this->groupByDate;
-    }
-
-    public function getPerPageCount(): int
-    {
-        return $this->perPage;
-    }
+    public static int $perPage = 20;
 
     public function content(Schema $schema): Schema
     {
@@ -65,8 +41,8 @@ final class ActivityLogRelationManager extends RelationManager
                     Livewire::make(ActivityLogLivewire::class, [
                         'subjectClass' => $owner::class,
                         'subjectKey' => $owner->getKey(),
-                        'groupByDate' => $this->groupByDate,
-                        'perPage' => $this->perPage,
+                        'groupByDate' => self::$groupByDate,
+                        'perPage' => self::$perPage,
                         'infiniteScroll' => self::$infiniteScroll,
                     ])->key('activity-log-relation-manager-'.$owner->getKey()),
                 ]),

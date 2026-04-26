@@ -121,7 +121,7 @@ Our Ecosystem
 Extend your Laravel applications with our ecosystem of complementary tools
 
 #default
-  ::card-group
+  ::card-group{class="lg:grid-cols-4"}
     :::card
     ---
     title: FilaForms

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
+  <rect width="64" height="64" rx="14" fill="#ffffff"/>
+
+  <!-- Three stacked log entries, fading -->
+  <rect x="14" y="14" width="36" height="9" rx="3" fill="url(#fv_brand)"/>
+  <rect x="14" y="27" width="29" height="9" rx="3" fill="url(#fv_brand)" opacity="0.75"/>
+  <rect x="14" y="40" width="22" height="9" rx="3" fill="url(#fv_brand)" opacity="0.5"/>
+
+  <defs>
+    <!-- violet-600 -> violet-400 -->
+    <linearGradient id="fv_brand" x1="14" y1="14" x2="50" y2="49" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7C3AED"/>
+      <stop offset="1" stop-color="#A78BFA"/>
+    </linearGradient>
+  </defs>
+</svg>

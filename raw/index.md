@@ -24,13 +24,7 @@ Get started
 
 </u-button>
 
-<u-button color="neutral" size="xl" to="/getting-started/quick-start" trailing-icon="i-lucide-rocket" variant="subtle">
-
-Get started in 5 minutes
-
-</u-button>
-
-<u-button color="neutral" size="xl" to="https://github.com/relaticle/activity-log" variant="outline" icon="simple-icons:github">
+<u-button color="neutral" size="xl" to="https://github.com/relaticle/activity-log" icon="simple-icons:github" variant="outline">
 
 GitHub
 
@@ -151,7 +145,7 @@ Extend your Laravel applications with our ecosystem of complementary tools
 
 </template>
 
-<card-group>
+<card-group className="lg:grid-cols-4">
 <card icon="i-simple-icons-laravel" target="_blank" title="FilaForms" to="https://filaforms.app">
 
 ![FilaForms](https://filaforms.app/img/og-image.png)
@@ -162,7 +156,7 @@ Visual form builder for all your public-facing forms.
 
 <card icon="i-lucide-sliders" target="_blank" title="Custom Fields" to="https://relaticle.github.io/custom-fields">
 
-![Custom Fields](https://github.com/Relaticle/custom-fields/raw/2.x/art/preview.png)
+![Custom Fields](https://relaticle.github.io/custom-fields/og-image.png)
 
 Let users add custom fields to any model without code changes.
 
@@ -173,6 +167,14 @@ Let users add custom fields to any model without code changes.
 ![Flowforge](https://github.com/relaticle/flowforge/raw/4.x/art/preview.png)
 
 Drag-and-drop Kanban for any Laravel model.
+
+</card>
+
+<card icon="i-lucide-file-spreadsheet" target="_blank" title="Tapix" to="https://tapix.dev">
+
+![Tapix](https://tapix.dev/img/og-image.png)
+
+CSV and Excel import wizard for Laravel and Filament.
 
 </card>
 </card-group>

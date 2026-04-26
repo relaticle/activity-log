@@ -1892,17 +1892,6 @@ Aggregates spatie activity logs, related-model timestamps, and custom sources in
   :::u-button
   ---
   color: neutral
-  size: xl
-  to: https://relaticle.github.io/activity-log/getting-started/quick-start
-  trailing-icon: i-lucide-rocket
-  variant: subtle
-  ---
-  Get started in 5 minutes
-  :::
-
-  :::u-button
-  ---
-  color: neutral
   icon: simple-icons:github
   size: xl
   to: https://github.com/relaticle/activity-log
@@ -1913,7 +1902,7 @@ Aggregates spatie activity logs, related-model timestamps, and custom sources in
 ::
 
 ::div{.text-center.max-w-4xl.mx-auto}
-![Activity Log Preview](https://relaticle.github.io/activity-log/preview.png){.mx-auto.max-w-full.h-auto.rounded-lg.shadow-lg}
+![Activity Log Preview](https://relaticle.github.io/activity-log/preview.png){.mx-auto.max-w-full.h-auto.rounded-lg.shadow-lg :zoom='false'}
 ::
 
 ::u-page-section
@@ -1989,7 +1978,7 @@ Why Activity Log?
 ::
 
 ::u-page-section
-  :::card-group
+  :::card-group{.lg:grid-cols-4}
     ::::card
     ---
     icon: i-simple-icons-laravel
@@ -1997,7 +1986,7 @@ Why Activity Log?
     title: FilaForms
     to: https://filaforms.app
     ---
-    ![FilaForms](https://filaforms.app/img/og-image.png)
+    ![FilaForms](https://filaforms.app/img/og-image.png){:zoom='false'}
 
     Visual form builder for all your public-facing forms.
     ::::
@@ -2009,7 +1998,7 @@ Why Activity Log?
     title: Custom Fields
     to: https://relaticle.github.io/custom-fields
     ---
-    ![Custom Fields](https://github.com/Relaticle/custom-fields/raw/2.x/art/preview.png)
+    ![Custom Fields](https://relaticle.github.io/custom-fields/og-image.png){:zoom='false'}
 
     Let users add custom fields to any model without code changes.
     ::::
@@ -2021,9 +2010,21 @@ Why Activity Log?
     title: Flowforge
     to: https://relaticle.github.io/flowforge
     ---
-    ![Flowforge](https://github.com/relaticle/flowforge/raw/4.x/art/preview.png)
+    ![Flowforge](https://github.com/relaticle/flowforge/raw/4.x/art/preview.png){:zoom='false'}
 
     Drag-and-drop Kanban for any Laravel model.
+    ::::
+
+    ::::card
+    ---
+    icon: i-lucide-file-spreadsheet
+    target: _blank
+    title: Tapix
+    to: https://tapix.dev
+    ---
+    ![Tapix](https://tapix.dev/img/og-image.png){:zoom='false'}
+
+    CSV and Excel import wizard for Laravel and Filament.
     ::::
   :::
 

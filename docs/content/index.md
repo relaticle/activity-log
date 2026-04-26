@@ -28,6 +28,17 @@ Aggregates spatie activity logs, related-model timestamps, and custom sources in
   :::u-button
   ---
   color: neutral
+  size: xl
+  to: /getting-started/quick-start
+  trailing-icon: i-lucide-rocket
+  variant: subtle
+  ---
+  Get started in 5 minutes
+  :::
+
+  :::u-button
+  ---
+  color: neutral
   icon: simple-icons:github
   size: xl
   to: https://github.com/relaticle/activity-log
@@ -84,10 +95,10 @@ Why Activity Log?
   icon: i-lucide-zap
   ---
   #title
-  Cursor-Friendly Pagination
+  Smart Pagination
 
   #description
-  Over-fetch buffer keeps dedup and filtering correct at deep pages without unbounded queries.
+  Over-fetch buffer keeps dedup and filtering correct at higher pages without unbounded queries.
   :::
 
   :::u-page-feature

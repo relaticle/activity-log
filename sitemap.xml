@@ -4,19 +4,40 @@
     <loc>https://relaticle.github.io/getting-started/installation</loc>
   </url>
   <url>
-    <loc>https://relaticle.github.io/essentials/integration-patterns</loc>
+    <loc>https://relaticle.github.io/getting-started/quick-start</loc>
+  </url>
+  <url>
+    <loc>https://relaticle.github.io/concepts/how-it-works</loc>
+  </url>
+  <url>
+    <loc>https://relaticle.github.io/essentials/sources</loc>
+  </url>
+  <url>
+    <loc>https://relaticle.github.io/essentials/filament-ui</loc>
+  </url>
+  <url>
+    <loc>https://relaticle.github.io/essentials/refining-the-timeline</loc>
   </url>
   <url>
     <loc>https://relaticle.github.io/essentials/customization</loc>
   </url>
   <url>
-    <loc>https://relaticle.github.io/essentials/database-schema</loc>
+    <loc>https://relaticle.github.io/essentials/caching</loc>
   </url>
   <url>
-    <loc>https://relaticle.github.io/essentials/api-reference</loc>
+    <loc>https://relaticle.github.io/essentials/configuration</loc>
   </url>
   <url>
-    <loc>https://relaticle.github.io/essentials/troubleshooting</loc>
+    <loc>https://relaticle.github.io/recipes/crm-person-feed</loc>
+  </url>
+  <url>
+    <loc>https://relaticle.github.io/recipes/audit-log-for-admins</loc>
+  </url>
+  <url>
+    <loc>https://relaticle.github.io/testing</loc>
+  </url>
+  <url>
+    <loc>https://relaticle.github.io/troubleshooting</loc>
   </url>
   <url>
     <loc>https://relaticle.github.io/community/contributing</loc>

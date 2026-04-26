@@ -6,12 +6,19 @@
 
 ## Docs
 
-- [Installation](https://relaticle.github.io/activity-log/raw/getting-started/installation.md): Install and migrate the package.
-- [Integration Patterns](https://relaticle.github.io/activity-log/raw/essentials/integration-patterns.md): Wire HasTimeline, compose sources, and render the feed.
-- [Customization](https://relaticle.github.io/activity-log/raw/essentials/customization.md): Brand the timeline - custom renderers and Tailwind theme integration.
-- [Database Schema](https://relaticle.github.io/activity-log/raw/essentials/database-schema.md): Tables the plugin reads from and the indexes it needs.
-- [API Reference](https://relaticle.github.io/activity-log/raw/essentials/api-reference.md): Components, builder refinements, config keys, and caching API.
-- [Troubleshooting](https://relaticle.github.io/activity-log/raw/essentials/troubleshooting.md): Common pitfalls, performance tuning, and debugging tips.
+- [Installation](https://relaticle.github.io/activity-log/raw/getting-started/installation.md): Install relaticle/activity-log, index your tables, and wire the panel plugin.
+- [Quick start](https://relaticle.github.io/activity-log/raw/getting-started/quick-start.md): Working timeline in 5 minutes — Person model, spatie log, infolist render.
+- [How it works](https://relaticle.github.io/activity-log/raw/concepts/how-it-works.md): The mental model and vocabulary behind the timeline pipeline.
+- [Sources](https://relaticle.github.io/activity-log/raw/essentials/sources.md): The four built-in source types and how to register custom ones.
+- [Filament UI](https://relaticle.github.io/activity-log/raw/essentials/filament-ui.md): The infolist component, relation manager, header action, and URL filter UI.
+- [Refining the timeline](https://relaticle.github.io/activity-log/raw/essentials/refining-the-timeline.md): Filter, sort, deduplicate, and paginate the merged stream.
+- [Customization](https://relaticle.github.io/activity-log/raw/essentials/customization.md): Custom renderers, registration channels, and Tailwind theme integration.
+- [Caching](https://relaticle.github.io/activity-log/raw/essentials/caching.md): Opt-in per-call caching, key composition, and invalidation caveats.
+- [Configuration](https://relaticle.github.io/activity-log/raw/essentials/configuration.md): Full reference for config/activity-log.php.
+- [CRM person feed](https://relaticle.github.io/activity-log/raw/recipes/crm-person-feed.md): End-to-end person profile timeline — own log, related logs, timestamp events, custom renderer.
+- [Audit log for admins](https://relaticle.github.io/activity-log/raw/recipes/audit-log-for-admins.md): Read-only admin audit trail — own log only, role-gated visibility, sensitive-field redaction.
+- [Testing](https://relaticle.github.io/activity-log/raw/testing.md): Test patterns for the timeline component, relation manager, action, and builder.
+- [Troubleshooting](https://relaticle.github.io/activity-log/raw/troubleshooting.md): Common pitfalls, known limitations, and how to work around them.
 - [Contributing](https://relaticle.github.io/activity-log/raw/community/contributing.md): How to contribute to Activity Log
 - [License](https://relaticle.github.io/activity-log/raw/community/license.md): MIT License terms and what it means for you
 

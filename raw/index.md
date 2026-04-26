@@ -24,7 +24,13 @@ Get started
 
 </u-button>
 
-<u-button color="neutral" size="xl" to="https://github.com/relaticle/activity-log" icon="simple-icons:github" variant="outline">
+<u-button color="neutral" size="xl" to="/getting-started/quick-start" trailing-icon="i-lucide-rocket" variant="subtle">
+
+Get started in 5 minutes
+
+</u-button>
+
+<u-button color="neutral" size="xl" to="https://github.com/relaticle/activity-log" variant="outline" icon="simple-icons:github">
 
 GitHub
 
@@ -91,13 +97,13 @@ Register Blade views, closures, or renderer classes per event or type. Falls bac
 <u-page-feature icon="i-lucide-zap">
 <template v-slot:title="">
 
-Cursor-Friendly Pagination
+Smart Pagination
 
 </template>
 
 <template v-slot:description="">
 
-Over-fetch buffer keeps dedup and filtering correct at deep pages without unbounded queries.
+Over-fetch buffer keeps dedup and filtering correct at higher pages without unbounded queries.
 
 </template>
 </u-page-feature>

@@ -7,9 +7,10 @@
   <rect x="14" y="40" width="22" height="9" rx="3" fill="url(#fv_brand)" opacity="0.5"/>
 
   <defs>
+    <!-- violet-600 -> violet-400 -->
     <linearGradient id="fv_brand" x1="14" y1="14" x2="50" y2="49" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#3B82F6"/>
-      <stop offset="1" stop-color="#06B6D4"/>
+      <stop stop-color="#7C3AED"/>
+      <stop offset="1" stop-color="#A78BFA"/>
     </linearGradient>
   </defs>
 </svg>

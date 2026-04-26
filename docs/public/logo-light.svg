@@ -8,9 +8,10 @@
   <text x="48" y="28" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="800" fill="#0a0a0a" letter-spacing="-0.6">Activity Log</text>
 
   <defs>
+    <!-- violet-600 -> violet-400 -->
     <linearGradient id="al_brand" x1="4" y1="6" x2="36" y2="34" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#3B82F6"/>
-      <stop offset="1" stop-color="#06B6D4"/>
+      <stop stop-color="#7C3AED"/>
+      <stop offset="1" stop-color="#A78BFA"/>
     </linearGradient>
   </defs>
 </svg>

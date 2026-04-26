@@ -1,29 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
-  <!-- Square favicon: just the timeline mark, scaled and centered -->
-  <rect width="64" height="64" rx="12" fill="#ffffff"/>
-  <line x1="14" y1="14" x2="14" y2="50" stroke="#E5E7EB" stroke-width="2" stroke-linecap="round"/>
+  <rect width="64" height="64" rx="14" fill="#ffffff"/>
 
-  <circle cx="14" cy="14" r="5" fill="url(#fv_blue)"/>
-  <rect x="26" y="10" width="28" height="8" rx="2" fill="url(#fv_blue)"/>
-
-  <circle cx="14" cy="32" r="5" fill="url(#fv_cyan)"/>
-  <rect x="26" y="28" width="24" height="8" rx="2" fill="url(#fv_cyan)"/>
-
-  <circle cx="14" cy="50" r="5" fill="url(#fv_green)"/>
-  <rect x="26" y="46" width="20" height="8" rx="2" fill="url(#fv_green)"/>
+  <!-- Three stacked log entries, fading -->
+  <rect x="14" y="14" width="36" height="9" rx="3" fill="url(#fv_brand)"/>
+  <rect x="14" y="27" width="29" height="9" rx="3" fill="url(#fv_brand)" opacity="0.75"/>
+  <rect x="14" y="40" width="22" height="9" rx="3" fill="url(#fv_brand)" opacity="0.5"/>
 
   <defs>
-    <linearGradient id="fv_blue" x1="9" y1="9" x2="54" y2="18" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#A3B4FF"/>
-      <stop offset="1" stop-color="#3B82F6"/>
-    </linearGradient>
-    <linearGradient id="fv_cyan" x1="9" y1="27" x2="50" y2="36" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#22D3EE"/>
+    <linearGradient id="fv_brand" x1="14" y1="14" x2="50" y2="49" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3B82F6"/>
       <stop offset="1" stop-color="#06B6D4"/>
-    </linearGradient>
-    <linearGradient id="fv_green" x1="9" y1="45" x2="46" y2="54" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#34D399"/>
-      <stop offset="1" stop-color="#10B981"/>
     </linearGradient>
   </defs>
 </svg>

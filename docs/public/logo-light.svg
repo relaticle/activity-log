@@ -1,33 +1,30 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="273" height="80" viewBox="0 0 273 80" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="40" viewBox="0 0 220 40" fill="none">
   <!-- Timeline backbone -->
-  <line x1="14" y1="18" x2="14" y2="58" stroke="#E5E7EB" stroke-width="2" stroke-linecap="round"/>
+  <line x1="10" y1="10" x2="10" y2="30" stroke="#E5E7EB" stroke-width="1.5" stroke-linecap="round"/>
 
-  <!-- Entry rows: dot + primary bar + subtitle bar -->
-  <circle cx="14" cy="18" r="5" fill="url(#al_g_blue)"/>
-  <rect x="26" y="14" width="46" height="8" rx="2" fill="url(#al_g_blue)"/>
-  <rect x="26" y="24" width="30" height="3" rx="1.5" fill="url(#al_g_blue)" opacity="0.4"/>
+  <!-- Entry rows: dot + primary bar -->
+  <circle cx="10" cy="10" r="3.5" fill="url(#al_g_blue)"/>
+  <rect x="18" y="6" width="24" height="8" rx="2" fill="url(#al_g_blue)"/>
 
-  <circle cx="14" cy="38" r="5" fill="url(#al_g_cyan)"/>
-  <rect x="26" y="34" width="42" height="8" rx="2" fill="url(#al_g_cyan)"/>
-  <rect x="26" y="44" width="24" height="3" rx="1.5" fill="url(#al_g_cyan)" opacity="0.4"/>
+  <circle cx="10" cy="20" r="3.5" fill="url(#al_g_cyan)"/>
+  <rect x="18" y="16" width="22" height="8" rx="2" fill="url(#al_g_cyan)"/>
 
-  <circle cx="14" cy="58" r="5" fill="url(#al_g_green)"/>
-  <rect x="26" y="54" width="38" height="8" rx="2" fill="url(#al_g_green)"/>
-  <rect x="26" y="64" width="28" height="3" rx="1.5" fill="url(#al_g_green)" opacity="0.4"/>
+  <circle cx="10" cy="30" r="3.5" fill="url(#al_g_green)"/>
+  <rect x="18" y="26" width="20" height="8" rx="2" fill="url(#al_g_green)"/>
 
   <!-- Wordmark -->
-  <text x="86" y="48" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="24" font-weight="700" fill="#18181b" letter-spacing="-0.5">Activity Log</text>
+  <text x="52" y="27" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="700" fill="#18181b" letter-spacing="-0.5">Activity Log</text>
 
   <defs>
-    <linearGradient id="al_g_blue" x1="9" y1="13" x2="72" y2="22" gradientUnits="userSpaceOnUse">
+    <linearGradient id="al_g_blue" x1="6" y1="6" x2="42" y2="14" gradientUnits="userSpaceOnUse">
       <stop stop-color="#A3B4FF"/>
       <stop offset="1" stop-color="#3B82F6"/>
     </linearGradient>
-    <linearGradient id="al_g_cyan" x1="9" y1="33" x2="68" y2="42" gradientUnits="userSpaceOnUse">
+    <linearGradient id="al_g_cyan" x1="6" y1="16" x2="40" y2="24" gradientUnits="userSpaceOnUse">
       <stop stop-color="#22D3EE"/>
       <stop offset="1" stop-color="#06B6D4"/>
     </linearGradient>
-    <linearGradient id="al_g_green" x1="9" y1="53" x2="64" y2="62" gradientUnits="userSpaceOnUse">
+    <linearGradient id="al_g_green" x1="6" y1="26" x2="38" y2="34" gradientUnits="userSpaceOnUse">
       <stop stop-color="#34D399"/>
       <stop offset="1" stop-color="#10B981"/>
     </linearGradient>

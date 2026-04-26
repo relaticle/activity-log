@@ -157,5 +157,17 @@ Extend your Laravel applications with our ecosystem of complementary tools
 
     Drag-and-drop Kanban for any Laravel model.
     :::
+
+    :::card
+    ---
+    title: Tapix
+    icon: i-lucide-file-spreadsheet
+    to: https://tapix.dev
+    target: _blank
+    ---
+    ![Tapix](https://tapix.dev/img/og-image.png)
+
+    CSV and Excel import wizard for Laravel and Filament.
+    :::
   ::
 ::

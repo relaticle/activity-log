@@ -38,7 +38,9 @@ Aggregates spatie activity logs, related-model timestamps, and custom sources in
 ::
 
 <div class="text-center max-w-4xl mx-auto">
-  <img src="/preview.png" alt="Activity Log Preview" class="mx-auto max-w-full h-auto rounded-lg shadow-lg" />
+
+![Activity Log Preview](/preview.png){:zoom="false" class="mx-auto max-w-full h-auto rounded-lg shadow-lg"}
+
 </div>
 
 ::u-page-section
@@ -129,7 +131,7 @@ Extend your Laravel applications with our ecosystem of complementary tools
     to: https://filaforms.app
     target: _blank
     ---
-    ![FilaForms](https://filaforms.app/img/og-image.png)
+    ![FilaForms](https://filaforms.app/img/og-image.png){:zoom="false"}
 
     Visual form builder for all your public-facing forms.
     :::
@@ -141,7 +143,7 @@ Extend your Laravel applications with our ecosystem of complementary tools
     to: https://relaticle.github.io/custom-fields
     target: _blank
     ---
-    ![Custom Fields](https://github.com/Relaticle/custom-fields/raw/2.x/art/preview.png)
+    ![Custom Fields](https://relaticle.github.io/custom-fields/og-image.png){:zoom="false"}
 
     Let users add custom fields to any model without code changes.
     :::
@@ -153,7 +155,7 @@ Extend your Laravel applications with our ecosystem of complementary tools
     to: https://relaticle.github.io/flowforge
     target: _blank
     ---
-    ![Flowforge](https://github.com/relaticle/flowforge/raw/4.x/art/preview.png)
+    ![Flowforge](https://github.com/relaticle/flowforge/raw/4.x/art/preview.png){:zoom="false"}
 
     Drag-and-drop Kanban for any Laravel model.
     :::
@@ -165,7 +167,7 @@ Extend your Laravel applications with our ecosystem of complementary tools
     to: https://tapix.dev
     target: _blank
     ---
-    ![Tapix](https://tapix.dev/img/og-image.png)
+    ![Tapix](https://tapix.dev/img/og-image.png){:zoom="false"}
 
     CSV and Excel import wizard for Laravel and Filament.
     :::

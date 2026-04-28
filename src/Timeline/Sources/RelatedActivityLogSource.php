@@ -33,7 +33,7 @@ final class RelatedActivityLogSource extends AbstractTimelineSource
             $morphClass = (new $relatedClass)->getMorphClass();
 
             /** @var EloquentCollection<int, Model> $rows */
-            $rows = $subject->{$relation}()->get();
+            $rows = $subject->{$relation}()->limit($window->cap)->get();
 
             foreach ($rows as $row) {
                 $subjectPairs[] = [$morphClass, (string) $row->getKey()];

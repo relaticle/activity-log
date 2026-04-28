@@ -280,7 +280,8 @@ final class TimelineBuilder
             $cache = resolve(TimelineCache::class);
             $key = $cache->keyFor($this->subject, $this->filterHash(), $page, $perPage);
 
-            return $cache->store()->remember(
+            return $cache->remember(
+                $this->subject,
                 $key,
                 $this->cacheTtl,
                 fn (): LengthAwarePaginator => $this->runPaginate($perPage, $page),

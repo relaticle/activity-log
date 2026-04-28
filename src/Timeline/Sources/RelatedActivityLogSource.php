@@ -82,7 +82,7 @@ final class RelatedActivityLogSource extends AbstractTimelineSource
 
         return new TimelineEntry(
             id: sprintf('related_activity_log:%s:%s', $activity->id, $event),
-            type: 'activity_log',
+            type: 'related_activity_log',
             event: $event,
             occurredAt: $occurredAt,
             dedupKey: $this->dedupKeyFor($relatedModel::class, (string) $relatedModel->getKey(), $occurredAt),

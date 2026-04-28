@@ -31,7 +31,8 @@ final class ActivityLogServiceProvider extends PackageServiceProvider
     {
         Livewire::component('activity-log', Filament\Livewire\ActivityLogLivewire::class);
 
-        $this->app->make(RendererRegistry::class)
-            ->register('activity_log', Renderers\ActivityLogRenderer::class);
+        $registry = $this->app->make(RendererRegistry::class);
+        $registry->register('activity_log', Renderers\ActivityLogRenderer::class);
+        $registry->register('related_activity_log', Renderers\ActivityLogRenderer::class);
     }
 }

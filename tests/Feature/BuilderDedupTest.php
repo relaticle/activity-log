@@ -46,7 +46,7 @@ it('priority override swaps the winner', function (): void {
         ->get();
 
     expect($entries)->toHaveCount(1)
-        ->and($entries->first()->type)->toBe('activity_log');
+        ->and($entries->first()->type)->toBe('related_activity_log');
 });
 
 it('dedupKeyUsing() overrides the per-entry dedup key', function (): void {

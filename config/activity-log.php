@@ -14,8 +14,6 @@ return [
         'custom' => 30,
     ],
 
-    'date_groups' => ['today', 'yesterday', 'this_week', 'last_week', 'this_month', 'older'],
-
     'renderers' => [
         // 'email_sent' => \App\Timeline\Renderers\EmailSentRenderer::class,
     ],

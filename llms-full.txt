@@ -71,7 +71,7 @@ Without this line, you may see unstyled or partially-styled timeline entries in 
 
 ## Register the panel plugin (optional)
 
-Only needed when you want to register custom renderers; auto-discovery covers everything else. Use the **Filament-namespaced plugin** (not the orphan root `Relaticle\ActivityLog\ActivityLogPlugin` — see [issue #13](https://github.com/relaticle/activity-log/issues/13){rel="&#x22;nofollow&#x22;"}):
+Only needed when you want to register custom renderers; auto-discovery covers everything else.
 
 ```php
 use Relaticle\ActivityLog\Filament\ActivityLogPlugin;
@@ -1000,7 +1000,7 @@ Three places to register renderers. They write to the same registry — pick by 
 
 ### Plugin
 
-Preferred for **panel-scoped overrides**. Use `Relaticle\ActivityLog\Filament\ActivityLogPlugin` (the Filament-namespaced one) and pass renderers directly to the plugin.
+Preferred for **panel-scoped overrides**. Use `Relaticle\ActivityLog\Filament\ActivityLogPlugin` and pass renderers directly to the plugin.
 
 ```php
 use Illuminate\Support\HtmlString;
@@ -1014,24 +1014,6 @@ $panel->plugin(
     ]),
 );
 ```
-
-::callout{color="warning" icon="i-lucide-triangle-alert"}
-**Use the Filament-namespaced plugin.**
-
- A stale orphan class 
-
-`Relaticle\ActivityLog\ActivityLogPlugin`
-
- (root namespace, no 
-
-`Filament\`
-
-) still ships in the package — never import that one. Tracked by 
-
-[issue #13](https://github.com/relaticle/activity-log/issues/13){rel=""nofollow""}
-
-.
-::
 
 ### Facade
 

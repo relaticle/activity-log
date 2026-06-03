@@ -44,22 +44,11 @@ Where:
 
 Changing any filter — `->ofType(...)`, `->between(...)`, `->sortByDateAsc()` — produces a different key, so re-running the same builder with different chain state does **not** collide on a stale entry.
 
-## Invalidation — known limitation
+## Invalidation
 
-<callout color="warning" icon="i-lucide-alert-triangle">
+`$record->forgetTimelineCache()` invalidates only this subject's cached timeline pages. It tracks the keys it writes in a per-subject index entry (`{prefix}:{model_class}:{key}:index`) and forgets exactly those keys plus the index — sessions, queue locks, and other application caches in the same store are untouched.
 
-**$record->forgetTimelineCache() flushes the entire cache store, not just this subject's timeline entries.**
-
-Internally it calls `Cache::store(...)->getStore()->flush()`. If you share the default cache store with sessions, application caches, queue locks, or anything else, calling `forgetTimelineCache()` clears all of them.
-
-Tracked by [issue #12](https://github.com/relaticle/activity-log/issues/12). The recommended fix is tagged-cache invalidation keyed on the per-subject prefix.
-
-**Workarounds until the fix lands:**
-
-- **Use a dedicated cache store.** Set `cache.store` to a Redis database, file path, or memory store dedicated to the timeline. Flushing it then only affects timeline entries — see [Configuration knobs](#configuration-knobs) below.
-- **Skip explicit invalidation.** Pick a TTL short enough that staleness is acceptable (e.g. 60 seconds for a high-traffic dashboard) and let entries expire naturally. No `forgetTimelineCache()` call needed.
-
-</callout>
+Alternative: skip explicit invalidation and pick a TTL short enough that staleness is acceptable (e.g. 60 seconds for a high-traffic dashboard) and let entries expire naturally.
 
 ## Configuration knobs
 
@@ -99,11 +88,7 @@ Short reference here; the full table lives on [/essentials/configuration#cache](
     </td>
     
     <td>
-      Which Laravel cache store to use. <strong>
-        Strongly recommended: a dedicated store
-      </strong>
-      
-       (see invalidation caveat above).
+      Which Laravel cache store to use.
     </td>
   </tr>
   

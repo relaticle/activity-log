@@ -27,18 +27,6 @@ Dedup uses `dedupKey` + `sourcePriority`. If two sources emit the same logical e
 
 </callout>
 
-## Cache invalidation flushed unrelated caches
-
-<callout color="warning" icon="i-lucide-alert-triangle">
-
-- **Symptom:** after calling `$record->forgetTimelineCache()`, sessions / queue locks / application caches are gone too.
-- **Cause:** `TimelineCache::forget()` calls `Cache::store(...)->getStore()->flush()` — flushes the entire cache store, not just this subject's keys.
-- **Workaround:** configure `cache.store` to a dedicated Laravel cache store used only by the timeline. Or skip explicit invalidation and let TTL expire naturally (set a short `->cached($ttl)`).
-- **Tracking:** [issue #12](https://github.com/relaticle/activity-log/issues/12).
-- Full caveat at [/essentials/caching#invalidation--known-limitation](/essentials/caching#invalidation--known-limitation).
-
-</callout>
-
 ## `fromActivityLog()` throws on a fresh model
 
 <callout color="warning" icon="i-lucide-alert-triangle">

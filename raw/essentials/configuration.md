@@ -298,15 +298,7 @@ Every knob the package exposes lives in `config/activity-log.php`. Publish it wi
     </td>
     
     <td>
-      Laravel cache store name. <strong>
-        Recommended: dedicated store
-      </strong>
-      
-       to avoid <code>
-        forgetTimelineCache
-      </code>
-      
-       cross-contamination. See <a href="/essentials/caching">
+      Laravel cache store name. See <a href="/essentials/caching">
         /essentials/caching
       </a>
       

@@ -234,26 +234,16 @@ Sources should respect `cap` to keep memory bounded — `RelatedActivityLogSourc
 
 ## Type taxonomy
 
-::callout{color="warning" icon="i-lucide-alert-triangle"}
-**Two distinct "type" axes exist. Do not confuse them.**
+The **entry-type** axis (`$entry->type`) and the **source-priority config** axis (`source_priorities` keys) align one-to-one:
 
-The **entry-type** axis (`$entry->type`) has **3 values today**:
+| Source                     | `$entry->type`         | `source_priorities` key |
+| -------------------------- | ---------------------- | ----------------------- |
+| `ActivityLogSource`        | `activity_log`         | `activity_log`          |
+| `RelatedActivityLogSource` | `related_activity_log` | `related_activity_log`  |
+| `RelatedModelSource`       | `related_model`        | `related_model`         |
+| `CustomEventSource`        | `custom`               | `custom`                |
 
-- `activity_log`
-- `related_model`
-- `custom`
-
-The **source-priority config** axis (`source_priorities` config keys) has **4 keys**:
-
-- `activity_log`
-- `related_activity_log`
-- `related_model`
-- `custom`
-
-Critically: RelatedActivityLogSource emits entries with `type='activity_log'` (**not** `'related_activity_log'`). Filtering with `->ofType(['related_activity_log'])` will never match anything. To distinguish own-log entries from related-log entries today, inspect `$entry->relatedModel` (it's `null` for `ActivityLogSource` entries and an Eloquent model for `RelatedActivityLogSource` entries) after calling `->get()` — there is no builder-level filter for source-of-origin.
-
-See [/troubleshooting](https://relaticle.github.io/activity-log/troubleshooting) ("Type filter doesn't match anything") and [issue #11](https://github.com/relaticle/activity-log/issues/11){rel=""nofollow""}.
-::
+To match both spatie-log sources in a filter, pass both keys: `->ofType(['activity_log', 'related_activity_log'])`. The built-in `ActivityLogRenderer` is auto-registered for both types, so diff rendering works for own-log and related-log entries without extra wiring.
 
 ## Source priorities
 
@@ -389,29 +379,25 @@ For each named relation, the source loads the related rows, then queries `activi
 ::callout{color="info" icon="i-lucide-info"}
 Entries from this source carry 
 
-`type='activity_log'`
+`type='related_activity_log'`
 
-, 
+ and dedup-collide with the matching 
 
-**not**
+`RelatedModelSource`
 
- 
+ event when both fire at the same second. The built-in 
 
-`'related_activity_log'`
+`ActivityLogRenderer`
 
-. The 
+ is auto-registered for both 
+
+`activity_log`
+
+ and 
 
 `related_activity_log`
 
- key only exists in 
-
-`config('activity-log.source_priorities')`
-
- for priority configuration. See the type taxonomy in 
-
-[/concepts/how-it-works](https://relaticle.github.io/activity-log/concepts/how-it-works#type-taxonomy)
-
-.
+, so spatie diffs render automatically for related-model logs too.
 ::
 
 ## `fromRelation(string $relation, Closure $configure)`
@@ -788,9 +774,13 @@ The
 
 `$entry->type`
 
-, so only the three real entry-type values resolve (
+. Built-in types: 
 
 `activity_log`
+
+, 
+
+`related_activity_log`
 
 , 
 
@@ -800,11 +790,7 @@ The
 
 `custom`
 
-). Filtering by 
-
-`'related_activity_log'`
-
- matches nothing — see the type taxonomy in 
+. See the type taxonomy in 
 
 [/concepts/how-it-works](https://relaticle.github.io/activity-log/concepts/how-it-works#type-taxonomy)
 
@@ -842,26 +828,34 @@ $record->timeline()
 
 Type and event filters are mirrored onto every source's `Window` so sources can push them into SQL where possible. The builder also re-applies them post-yield as a safety net, so a source that ignores the `Window` filters still produces correct output.
 
-::callout{color="warning" icon="i-lucide-alert-triangle"}
-**There are only three entry types today: `activity_log`, `related_model`, `custom`.**
+::callout{color="info" icon="i-lucide-info"}
+**Built-in entry types: `activity_log`, `related_activity_log`, `related_model`, `custom`.**
 
- Entries from 
+ 
+
+`ActivityLogSource`
+
+ emits 
+
+`activity_log`
+
+; 
 
 `RelatedActivityLogSource`
 
- carry 
+ emits 
 
-`type='activity_log'`
+`related_activity_log`
 
- — calling 
+. To match both spatie-log sources, pass both keys: 
 
-`->ofType(['related_activity_log'])`
+`->ofType(['activity_log', 'related_activity_log'])`
 
- will silently match nothing. See the 
+. See the 
 
 [type taxonomy](https://relaticle.github.io/activity-log/concepts/how-it-works#type-taxonomy)
 
- for the full breakdown.
+.
 ::
 
 ## Sorting
@@ -1181,19 +1175,19 @@ Every knob the package exposes lives in `config/activity-log.php`. Publish it wi
 
 ## Keys
 
-| Key                                      | Type      | Default                | Effect                                                                                                                                                                                                                                                                               |
-| ---------------------------------------- | --------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `default_per_page`                       | `int`     | `20`                   | Used by `$builder->paginate(null)` only. The Filament UI surfaces (infolist, relation manager, action) have their own defaults — see [/essentials/filament-ui#defaults-at-a-glance](https://relaticle.github.io/activity-log/essentials/filament-ui#defaults-at-a-glance).           |
-| `pagination_buffer`                      | `int`     | `2`                    | Per-source over-fetch multiplier: `cap = perPage × (page + buffer)`. See [/essentials/refining-the-timeline#pagination-buffer-mechanics](https://relaticle.github.io/activity-log/essentials/refining-the-timeline#pagination-buffer-mechanics).                                     |
-| `deduplicate_by_default`                 | `bool`    | `true`                 | Builder dedup default; overridable per-call via `->deduplicate(false)`.                                                                                                                                                                                                              |
-| `source_priorities.activity_log`         | `int`     | `10`                   | Priority for `ActivityLogSource`.                                                                                                                                                                                                                                                    |
-| `source_priorities.related_activity_log` | `int`     | `10`                   | Priority for `RelatedActivityLogSource`. **Note**: priority key only — entries from this source carry `type='activity_log'`, NOT `'related_activity_log'`. See [/concepts/how-it-works#type-taxonomy](https://relaticle.github.io/activity-log/concepts/how-it-works#type-taxonomy). |
-| `source_priorities.related_model`        | `int`     | `20`                   | Priority for `RelatedModelSource`.                                                                                                                                                                                                                                                   |
-| `source_priorities.custom`               | `int`     | `30`                   | Priority for `CustomEventSource`.                                                                                                                                                                                                                                                    |
-| `renderers`                              | `array`   | `[]`                   | Event-or-type → renderer map. See [/essentials/customization#registration-channels](https://relaticle.github.io/activity-log/essentials/customization#registration-channels).                                                                                                        |
-| `cache.store`                            | `?string` | `null` (default cache) | Laravel cache store name. See [/essentials/caching](https://relaticle.github.io/activity-log/essentials/caching).                                                                                                                                                                    |
-| `cache.ttl_seconds`                      | `int`     | `0`                    | Reserved; not currently consulted by `TimelineCache`. The per-call `->cached($ttl)` is the working knob.                                                                                                                                                                             |
-| `cache.key_prefix`                       | `string`  | `'activity-log'`       | Prefix for all cache keys.                                                                                                                                                                                                                                                           |
+| Key                                      | Type      | Default                | Effect                                                                                                                                                                                                                                                                     |
+| ---------------------------------------- | --------- | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `default_per_page`                       | `int`     | `20`                   | Used by `$builder->paginate(null)` only. The Filament UI surfaces (infolist, relation manager, action) have their own defaults — see [/essentials/filament-ui#defaults-at-a-glance](https://relaticle.github.io/activity-log/essentials/filament-ui#defaults-at-a-glance). |
+| `pagination_buffer`                      | `int`     | `2`                    | Per-source over-fetch multiplier: `cap = perPage × (page + buffer)`. See [/essentials/refining-the-timeline#pagination-buffer-mechanics](https://relaticle.github.io/activity-log/essentials/refining-the-timeline#pagination-buffer-mechanics).                           |
+| `deduplicate_by_default`                 | `bool`    | `true`                 | Builder dedup default; overridable per-call via `->deduplicate(false)`.                                                                                                                                                                                                    |
+| `source_priorities.activity_log`         | `int`     | `10`                   | Priority for `ActivityLogSource`.                                                                                                                                                                                                                                          |
+| `source_priorities.related_activity_log` | `int`     | `10`                   | Priority for `RelatedActivityLogSource`. Entries from this source carry `type='related_activity_log'`.                                                                                                                                                                     |
+| `source_priorities.related_model`        | `int`     | `20`                   | Priority for `RelatedModelSource`.                                                                                                                                                                                                                                         |
+| `source_priorities.custom`               | `int`     | `30`                   | Priority for `CustomEventSource`.                                                                                                                                                                                                                                          |
+| `renderers`                              | `array`   | `[]`                   | Event-or-type → renderer map. See [/essentials/customization#registration-channels](https://relaticle.github.io/activity-log/essentials/customization#registration-channels).                                                                                              |
+| `cache.store`                            | `?string` | `null` (default cache) | Laravel cache store name. See [/essentials/caching](https://relaticle.github.io/activity-log/essentials/caching).                                                                                                                                                          |
+| `cache.ttl_seconds`                      | `int`     | `0`                    | Reserved; not currently consulted by `TimelineCache`. The per-call `->cached($ttl)` is the working knob.                                                                                                                                                                   |
+| `cache.key_prefix`                       | `string`  | `'activity-log'`       | Prefix for all cache keys.                                                                                                                                                                                                                                                 |
 
 ## Removed key: `date_groups`
 
@@ -1739,13 +1733,14 @@ Renderers resolve in this order: explicit `$entry->renderer` → `bindings[$entr
 
 Dedup uses `dedupKey` + `sourcePriority`. If two sources emit the same logical event with different keys, they won't collapse. Either align `dedupKey` on both sources (use `->dedupKeyUsing()` on the builder) or raise the preferred source's priority so the loser is dropped. Mechanics at [/concepts/how-it-works#dedup-behavior](https://relaticle.github.io/activity-log/concepts/how-it-works#dedup-behavior).
 
-## Type filter doesn't match anything
+## Cache invalidation flushed unrelated caches
 
 ::callout{color="warning" icon="i-lucide-alert-triangle"}
-- **Symptom:** `$record->timeline()->fromActivityLogOf(['emails'])->ofType(['related_activity_log'])->get()` returns empty.
-- **Cause:** `RelatedActivityLogSource` emits entries with `type='activity_log'` (NOT `'related_activity_log'`). The `related_activity_log` key only exists in `source_priorities` config — for priority configuration only.
-- **Workaround:** filter with `->ofType(['activity_log'])` to include both own- and related-log entries. To distinguish them at the entry level, inspect `$entry->relatedModel` (`null` for `ActivityLogSource`, an Eloquent model for `RelatedActivityLogSource`).
-- **Tracking:** [issue #11](https://github.com/relaticle/activity-log/issues/11){rel=""nofollow""}.
+- **Symptom:** after calling `$record->forgetTimelineCache()`, sessions / queue locks / application caches are gone too.
+- **Cause:** `TimelineCache::forget()` calls `Cache::store(...)->getStore()->flush()` — flushes the entire cache store, not just this subject's keys.
+- **Workaround:** configure `cache.store` to a dedicated Laravel cache store used only by the timeline. Or skip explicit invalidation and let TTL expire naturally (set a short `->cached($ttl)`).
+- **Tracking:** [issue #12](https://github.com/relaticle/activity-log/issues/12){rel=""nofollow""}.
+- Full caveat at [/essentials/caching#invalidation--known-limitation](https://relaticle.github.io/activity-log/essentials/caching#invalidation--known-limitation).
 ::
 
 ## `fromActivityLog()` throws on a fresh model

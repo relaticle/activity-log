@@ -50,28 +50,115 @@ Sources should respect `cap` to keep memory bounded — `RelatedActivityLogSourc
 
 ## Type taxonomy
 
-<callout color="warning" icon="i-lucide-alert-triangle">
+The **entry-type** axis (`$entry->type`) and the **source-priority config** axis (`source_priorities` keys) align one-to-one:
 
-**Two distinct "type" axes exist. Do not confuse them.**
+<table>
+<thead>
+  <tr>
+    <th>
+      Source
+    </th>
+    
+    <th>
+      <code>
+        $entry->type
+      </code>
+    </th>
+    
+    <th>
+      <code>
+        source_priorities
+      </code>
+      
+       key
+    </th>
+  </tr>
+</thead>
 
-The **entry-type** axis (`$entry->type`) has **3 values today**:
+<tbody>
+  <tr>
+    <td>
+      <code>
+        ActivityLogSource
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        activity_log
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        activity_log
+      </code>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        RelatedActivityLogSource
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        related_activity_log
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        related_activity_log
+      </code>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        RelatedModelSource
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        related_model
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        related_model
+      </code>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        CustomEventSource
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        custom
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        custom
+      </code>
+    </td>
+  </tr>
+</tbody>
+</table>
 
-- `activity_log`
-- `related_model`
-- `custom`
-
-The **source-priority config** axis (`source_priorities` config keys) has **4 keys**:
-
-- `activity_log`
-- `related_activity_log`
-- `related_model`
-- `custom`
-
-Critically: RelatedActivityLogSource emits entries with `type='activity_log'` (**not** `'related_activity_log'`). Filtering with `->ofType(['related_activity_log'])` will never match anything. To distinguish own-log entries from related-log entries today, inspect `$entry->relatedModel` (it's `null` for `ActivityLogSource` entries and an Eloquent model for `RelatedActivityLogSource` entries) after calling `->get()` — there is no builder-level filter for source-of-origin.
-
-See [/troubleshooting](/troubleshooting) ("Type filter doesn't match anything") and [issue #11](https://github.com/relaticle/activity-log/issues/11).
-
-</callout>
+To match both spatie-log sources in a filter, pass both keys: `->ofType(['activity_log', 'related_activity_log'])`. The built-in `ActivityLogRenderer` is auto-registered for both types, so diff rendering works for own-log and related-log entries without extra wiring.
 
 ## Source priorities
 

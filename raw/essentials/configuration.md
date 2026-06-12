@@ -172,21 +172,9 @@ Every knob the package exposes lives in `config/activity-log.php`. Publish it wi
         RelatedActivityLogSource
       </code>
       
-      . <strong>
-        Note
-      </strong>
-      
-      : priority key only — entries from this source carry <code>
-        type='activity_log'
+      . Entries from this source carry <code>
+        type='related_activity_log'
       </code>
-      
-      , NOT <code>
-        'related_activity_log'
-      </code>
-      
-      . See <a href="/concepts/how-it-works#type-taxonomy">
-        /concepts/how-it-works#type-taxonomy
-      </a>
       
       .
     </td>

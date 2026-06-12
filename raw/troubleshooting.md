@@ -16,14 +16,15 @@ Renderers resolve in this order: explicit `$entry->renderer` → `bindings[$entr
 
 Dedup uses `dedupKey` + `sourcePriority`. If two sources emit the same logical event with different keys, they won't collapse. Either align `dedupKey` on both sources (use `->dedupKeyUsing()` on the builder) or raise the preferred source's priority so the loser is dropped. Mechanics at [/concepts/how-it-works#dedup-behavior](/concepts/how-it-works#dedup-behavior).
 
-## Type filter doesn't match anything
+## Cache invalidation flushed unrelated caches
 
 <callout color="warning" icon="i-lucide-alert-triangle">
 
-- **Symptom:** `$record->timeline()->fromActivityLogOf(['emails'])->ofType(['related_activity_log'])->get()` returns empty.
-- **Cause:** `RelatedActivityLogSource` emits entries with `type='activity_log'` (NOT `'related_activity_log'`). The `related_activity_log` key only exists in `source_priorities` config — for priority configuration only.
-- **Workaround:** filter with `->ofType(['activity_log'])` to include both own- and related-log entries. To distinguish them at the entry level, inspect `$entry->relatedModel` (`null` for `ActivityLogSource`, an Eloquent model for `RelatedActivityLogSource`).
-- **Tracking:** [issue #11](https://github.com/relaticle/activity-log/issues/11).
+- **Symptom:** after calling `$record->forgetTimelineCache()`, sessions / queue locks / application caches are gone too.
+- **Cause:** `TimelineCache::forget()` calls `Cache::store(...)->getStore()->flush()` — flushes the entire cache store, not just this subject's keys.
+- **Workaround:** configure `cache.store` to a dedicated Laravel cache store used only by the timeline. Or skip explicit invalidation and let TTL expire naturally (set a short `->cached($ttl)`).
+- **Tracking:** [issue #12](https://github.com/relaticle/activity-log/issues/12).
+- Full caveat at [/essentials/caching#invalidation--known-limitation](/essentials/caching#invalidation--known-limitation).
 
 </callout>
 

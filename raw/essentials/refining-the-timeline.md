@@ -104,9 +104,9 @@ $record->timeline()
 
 Type and event filters are mirrored onto every source's `Window` so sources can push them into SQL where possible. The builder also re-applies them post-yield as a safety net, so a source that ignores the `Window` filters still produces correct output.
 
-<callout color="warning" icon="i-lucide-alert-triangle">
+<callout color="info" icon="i-lucide-info">
 
-**There are only three entry types today: activity_log, related_model, custom.** Entries from `RelatedActivityLogSource` carry `type='activity_log'` — calling `->ofType(['related_activity_log'])` will silently match nothing. See the [type taxonomy](/concepts/how-it-works#type-taxonomy) for the full breakdown.
+**Built-in entry types: activity_log, related_activity_log, related_model, custom.** `ActivityLogSource` emits `activity_log`; `RelatedActivityLogSource` emits `related_activity_log`. To match both spatie-log sources, pass both keys: `->ofType(['activity_log', 'related_activity_log'])`. See the [type taxonomy](/concepts/how-it-works#type-taxonomy).
 
 </callout>
 

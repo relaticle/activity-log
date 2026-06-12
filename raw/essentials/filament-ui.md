@@ -390,7 +390,7 @@ A `resetFilters()` Livewire action is wired to the clear button — it nulls all
 
 <callout color="info" icon="i-lucide-info">
 
-The `typeFilter` value is matched against `$entry->type`, so only the three real entry-type values resolve (`activity_log`, `related_model`, `custom`). Filtering by `'related_activity_log'` matches nothing — see the type taxonomy in [/concepts/how-it-works](/concepts/how-it-works#type-taxonomy).
+The `typeFilter` value is matched against `$entry->type`. Built-in types: `activity_log`, `related_activity_log`, `related_model`, `custom`. See the type taxonomy in [/concepts/how-it-works](/concepts/how-it-works#type-taxonomy).
 
 </callout>
 

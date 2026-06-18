@@ -19,6 +19,7 @@ A unified chronological timeline for any Eloquent model. Aggregates `spatie/lara
 - **Filament-native UX** — infolist component, relation manager, and header-action slide-over
 - **Dedup + filtering** — type/event allow/deny lists, date windows, priority-based dedup with override
 - **Opt-in caching** — per-call TTL with explicit invalidation — no model observers
+- **Icon customization** — override default package UI icons using Filament's built-in Icon Alias registry
 
 ## Requirements
 

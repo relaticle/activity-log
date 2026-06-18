@@ -9,10 +9,13 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Components\Livewire;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Support\Facades\FilamentIcon;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Relaticle\ActivityLog\Filament\Livewire\ActivityLogLivewire;
+use Relaticle\ActivityLog\Icons\ActivityLogIconAlias;
 
 final class ActivityLogRelationManager extends RelationManager
 {
@@ -23,7 +26,10 @@ final class ActivityLogRelationManager extends RelationManager
         return (string) __('activity-log::messages.title');
     }
 
-    protected static string|BackedEnum|null $icon = 'heroicon-o-clock';
+    public static function getIcon(Model $ownerRecord, string $pageClass): string|BackedEnum|Htmlable|null
+    {
+        return FilamentIcon::resolve(ActivityLogIconAlias::RELATION_MANAGER_ICON);
+    }
 
     public static bool $infiniteScroll = true;
 

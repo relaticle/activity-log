@@ -1,31 +1,32 @@
 @php
+    use Relaticle\ActivityLog\Icons\ActivityLogIconAlias;
     use Relaticle\ActivityLog\Support\ActivityLogOperation;
     use Relaticle\ActivityLog\Support\ActivityLogSummary;
 
     $summary = ActivityLogSummary::from($entry);
-    $icon = $summary->operation?->icon() ?? 'heroicon-o-pencil-square';
+    $icon = $summary->operation?->icon() ?? ActivityLogIconAlias::LOG_OPERATION_UNKNOWN;
 @endphp
 
 <div
-    x-data="{ open: false }"
-    data-type="{{ $entry->type }}"
-    data-event="{{ $entry->event }}"
-    @class([
-        'group grid grid-cols-[28px_1fr_auto] items-start gap-x-3 rounded-md px-2 py-2 transition',
-        'cursor-pointer hover:bg-gray-50/60 dark:hover:bg-white/[0.03]' => $summary->hasDiff,
-    ])
-    @if ($summary->hasDiff)
-        role="button"
+        x-data="{ open: false }"
+        data-type="{{ $entry->type }}"
+        data-event="{{ $entry->event }}"
+        @class([
+            'group grid grid-cols-[28px_1fr_auto] items-start gap-x-3 rounded-md px-2 py-2 transition',
+            'cursor-pointer hover:bg-gray-50/60 dark:hover:bg-white/[0.03]' => $summary->hasDiff,
+        ])
+        @if ($summary->hasDiff)
+            role="button"
         tabindex="0"
         :aria-expanded="open.toString()"
         @click="open = !open"
         @keydown.enter.prevent="open = !open"
         @keydown.space.prevent="open = !open"
-    @endif
+        @endif
 >
     <div class="flex justify-center pt-0.5">
         <span class="flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 text-gray-600 ring-1 ring-gray-200 dark:bg-white/5 dark:text-gray-300 dark:ring-white/10">
-            <x-filament::icon :icon="$icon" class="h-3.5 w-3.5" />
+            <x-filament::icon :alias="$icon" class="h-3.5 w-3.5"/>
         </span>
     </div>
 
@@ -56,15 +57,16 @@
                             </dt>
                             <dd class="flex flex-wrap items-center gap-2 text-gray-700 dark:text-gray-300">
                                 <span
-                                    class="line-clamp-2 text-gray-500 line-through decoration-gray-400/50 dark:text-gray-500"
-                                    title="{{ $row->formattedOld() }}"
+                                        class="line-clamp-2 text-gray-500 line-through decoration-gray-400/50 dark:text-gray-500"
+                                        title="{{ $row->formattedOld() }}"
                                 >
                                     {{ $row->formattedOld() }}
                                 </span>
-                                <x-filament::icon icon="heroicon-m-arrow-right" class="h-3 w-3 shrink-0 text-gray-400" />
+                                <x-filament::icon :alias="ActivityLogIconAlias::LOG_VALUE_DIFF"
+                                                  class="h-3 w-3 shrink-0 text-gray-400"/>
                                 <span
-                                    class="line-clamp-2 font-medium text-gray-900 dark:text-gray-100"
-                                    title="{{ $row->formattedNew() }}"
+                                        class="line-clamp-2 font-medium text-gray-900 dark:text-gray-100"
+                                        title="{{ $row->formattedNew() }}"
                                 >
                                     {{ $row->formattedNew() }}
                                 </span>
@@ -78,18 +80,18 @@
 
     <div class="flex items-center gap-1.5 pt-0.5">
         <time
-            class="text-[11px] text-gray-500 dark:text-gray-400 tabular-nums"
-            datetime="{{ $entry->occurredAt->toIso8601String() }}"
-            title="{{ $entry->occurredAt->toDayDateTimeString() }}"
+                class="text-[11px] text-gray-500 dark:text-gray-400 tabular-nums"
+                datetime="{{ $entry->occurredAt->toIso8601String() }}"
+                title="{{ $entry->occurredAt->toDayDateTimeString() }}"
         >
             {{ $entry->occurredAt->diffForHumans(syntax: null, short: true) }}
         </time>
         @if ($summary->hasDiff)
             <x-filament::icon
-                icon="heroicon-m-chevron-down"
-                class="h-4 w-4 text-gray-400 transition-transform"
-                x-bind:class="open ? 'rotate-180' : ''"
-                aria-hidden="true"
+                    :alias="ActivityLogIconAlias::LOG_COLLAPSE_BUTTON"
+                    class="h-4 w-4 text-gray-400 transition-transform"
+                    x-bind:class="open ? 'rotate-180' : ''"
+                    aria-hidden="true"
             />
         @endif
     </div>

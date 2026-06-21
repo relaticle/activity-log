@@ -18,6 +18,7 @@ A unified chronological timeline for any Eloquent model. Aggregates `spatie/lara
 - **Per-event renderers** — Blade views, closures, or renderer classes bound per event or type
 - **Filament-native UX** — infolist component, relation manager, and header-action slide-over
 - **Dedup + filtering** — type/event allow/deny lists, date windows, priority-based dedup with override
+- **Same-save merge** — opt-in grouping of one save's activity rows into a single entry, keyed by spatie `batch_uuid`
 - **Opt-in caching** — per-call TTL with explicit invalidation — no model observers
 - **Icon customization** — override default package UI icons using Filament's built-in Icon Alias registry
 

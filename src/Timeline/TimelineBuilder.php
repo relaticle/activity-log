@@ -58,11 +58,17 @@ final class TimelineBuilder
         return $this->subject;
     }
 
-    public function fromActivityLog(?int $priority = null): self
+    public function fromActivityLog(?int $priority = null, ?string $mergedRenderer = null): self
     {
-        $this->sources[] = new ActivityLogSource(
+        $source = new ActivityLogSource(
             priority: $priority ?? (int) config('activity-log.source_priorities.activity_log', 10),
         );
+
+        if ($mergedRenderer !== null) {
+            $source->withSameBatchMerge($mergedRenderer);
+        }
+
+        $this->sources[] = $source;
 
         return $this;
     }

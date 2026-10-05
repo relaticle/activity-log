@@ -20,7 +20,7 @@ final class ActivityLog extends Entry
 
     private ?int $perPage = null;
 
-    private string $emptyState = 'No activity yet.';
+    private ?string $emptyState = null;
 
     private bool $infiniteScroll = true;
 
@@ -74,7 +74,7 @@ final class ActivityLog extends Entry
 
     public function getEmptyStateMessage(): string
     {
-        return $this->emptyState;
+        return $this->emptyState ?? __('activity-log::messages.empty_state');
     }
 
     public function resolveSubject(): Model

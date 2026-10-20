@@ -80,9 +80,8 @@ final readonly class ActivityLogSummary
                 ]);
             }
 
-            return (string) __('activity-log::messages.summary.changed_attributes', [
+            return trans_choice('activity-log::messages.summary.changed_attributes', $count, [
                 'causer' => $causer,
-                'count' => $count,
             ]);
         }
 

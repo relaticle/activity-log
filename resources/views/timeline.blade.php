@@ -1,8 +1,10 @@
+@use(Relaticle\ActivityLog\Icons\ActivityLogIconAlias)
+
 <div class="flex flex-col gap-6">
     @if ($entries->isEmpty())
         <div class="flex flex-col items-center justify-center gap-3 py-10 text-center">
             <div class="flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-400 dark:bg-white/5 dark:text-gray-500">
-                <x-filament::icon icon="heroicon-o-clock" class="h-5 w-5" />
+                <x-filament::icon :alias="ActivityLogIconAlias::TIMELINE_EMPTY" class="h-5 w-5" />
             </div>
             <p class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ $emptyState }}</p>
         </div>
@@ -27,7 +29,7 @@
                         @click="open = !open"
                     >
                         <x-filament::icon
-                            icon="heroicon-m-chevron-down"
+                            :alias="ActivityLogIconAlias::TIMELINE_COLLAPSE_BUTTON"
                             class="h-4 w-4 transition-transform"
                             x-bind:class="open ? '' : '-rotate-90'"
                         />
@@ -84,7 +86,9 @@
                     wire:click="loadMore"
                     wire:loading.attr="disabled"
                     wire:target="loadMore"
-                    icon="heroicon-m-arrow-down"
+                    {{-- Filament requires 'icon' to be set before it will resolve the 'icon-alias' --}}
+                    :icon="ActivityLogIconAlias::TIMELINE_LOAD_MORE_BUTTON"
+                    :icon-alias="ActivityLogIconAlias::TIMELINE_LOAD_MORE_BUTTON"
                 >
                     <span wire:loading.remove wire:target="loadMore">{{ __('activity-log::messages.load_more') }}</span>
                     <span wire:loading wire:target="loadMore">{{ __('activity-log::messages.loading') }}</span>

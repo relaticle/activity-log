@@ -8,8 +8,10 @@ use Filament\Actions\Action;
 use Filament\Schemas\Components\Livewire;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\Width;
+use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
 use Relaticle\ActivityLog\Filament\Livewire\ActivityLogLivewire;
+use Relaticle\ActivityLog\Icons\ActivityLogIconAlias;
 
 final class ActivityLogAction extends Action
 {
@@ -24,7 +26,7 @@ final class ActivityLogAction extends Action
 
         $this
             ->label(__('activity-log::messages.title'))
-            ->icon('heroicon-o-bars-3-bottom-left')
+            ->icon(FilamentIcon::resolve(ActivityLogIconAlias::ACTION_ICON))
             ->color('gray')
             ->modalHeading(__('activity-log::messages.title'))
             ->modalDescription(__('activity-log::messages.modal_description'))
@@ -32,12 +34,12 @@ final class ActivityLogAction extends Action
             ->modalSubmitAction(false)
             ->modalCancelActionLabel(__('activity-log::messages.close'))
             ->slideOver()
-            ->schema(fn (Schema $schema, Model $record): Schema => $schema->components([
+            ->schema(fn(Schema $schema, Model $record): Schema => $schema->components([
                 Livewire::make(ActivityLogLivewire::class, [
                     'subjectClass' => $record::class,
                     'subjectKey' => $record->getKey(),
                     'groupByDate' => true,
-                ])->key('activity-log-action-'.$record->getKey()),
+                ])->key('activity-log-action-' . $record->getKey()),
             ]));
     }
 }

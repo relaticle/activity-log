@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Relaticle\ActivityLog\Support;
 
+use Relaticle\ActivityLog\Icons\ActivityLogIconAlias;
+
 enum ActivityLogOperation: string
 {
     case Created = 'created';
@@ -14,10 +16,10 @@ enum ActivityLogOperation: string
     public function icon(): string
     {
         return match ($this) {
-            self::Created => 'heroicon-o-plus',
-            self::Deleted => 'heroicon-o-trash',
-            self::Restored => 'heroicon-o-arrow-uturn-left',
-            self::Updated => 'heroicon-o-pencil-square',
+            self::Created => ActivityLogIconAlias::LOG_OPERATION_CREATED,
+            self::Deleted => ActivityLogIconAlias::LOG_OPERATION_DELETED,
+            self::Restored => ActivityLogIconAlias::LOG_OPERATION_RESTORED,
+            self::Updated => ActivityLogIconAlias::LOG_OPERATION_UPDATED,
         };
     }
 
